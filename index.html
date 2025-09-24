@@ -1,0 +1,1905 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projet 24h - Outils de Comparaison ADP</title>
+    <!-- Collez votre code de suivi (ex: Microsoft Clarity) ici -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f0f4f8;
+            line-height: 1.6;
+            color: #1f2937;
+        }
+
+        /* Responsive scaling for different screen sizes */
+        @media (min-width: 1920px) {
+            body { font-size: 18px; }
+            .container { max-width: 90%; }
+        }
+        
+        @media (min-width: 1366px) and (max-width: 1919px) {
+            body { font-size: 16px; }
+            .container { max-width: 95%; }
+        }
+        
+        @media (max-width: 1365px) {
+            body { font-size: 14px; }
+            .container { max-width: 100%; }
+        }
+
+        .container {
+            margin: 0 auto;
+            padding: 1rem 2rem;
+        }
+
+        /* Navigation */
+        .nav-bar {
+            background: linear-gradient(135deg, #002366, #1e3a8a);
+            color: white;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .nav-step {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+        }
+
+        .nav-step:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .nav-step.active {
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
+        }
+
+        .nav-icon {
+            font-size: 1.2em;
+        }
+
+        .nav-divider {
+            width: 2px;
+            height: 2rem;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Section Headers */
+        .section {
+            margin: 3rem 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: #6b7280;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Grid layouts */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 1024px) {
+            .grid-2, .grid-3 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Simulateur Financier Styles */
+        .remuneration-section {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border: 2px solid #e2e8f0;
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .remuneration-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e40af;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input {
+            padding: 0.75rem 1rem;
+            border: 2px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        /* Planning Cards */
+        .planning-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .planning-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .planning-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+
+        .planning-card-12h::before {
+            background: linear-gradient(90deg, #dc2626, #ef4444);
+        }
+
+        .planning-card-24h::before {
+            background: linear-gradient(90deg, #16a34a, #22c55e);
+        }
+
+        .planning-card-12h.winner {
+            border: 2px solid #dc2626;
+            transform: scale(1.02);
+        }
+
+        .planning-card-24h.winner {
+            border: 2px solid #16a34a;
+            transform: scale(1.02);
+        }
+
+        .planning-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .planning-title-12h {
+            color: #dc2626;
+        }
+
+        .planning-title-24h {
+            color: #16a34a;
+        }
+
+        .planning-subtitle {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 1rem;
+        }
+
+        .salary-amount {
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .salary-amount-12h {
+            color: #dc2626;
+        }
+
+        .salary-amount-24h {
+            color: #16a34a;
+        }
+
+        .majorations-details {
+            border-top: 1px solid #e5e7eb;
+            padding-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .majorations-title {
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 0.75rem;
+            color: #374151;
+        }
+
+        .majoration-line {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.25rem;
+            color: #6b7280;
+        }
+
+        .majoration-value {
+            font-weight: 500;
+            color: #1f2937;
+        }
+
+        /* Interactive Calendar */
+        .calendar-section {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .calendar-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .hours-display {
+            text-align: right;
+        }
+
+        .hours-text {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #1f2937;
+        }
+
+        .progress-container {
+            width: 8rem;
+            height: 0.5rem;
+            background-color: #e5e7eb;
+            border-radius: 9999px;
+            margin-top: 0.25rem;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: #3b82f6;
+            border-radius: 9999px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-bar.over {
+            background-color: #ef4444;
+        }
+
+        .calendar-controls {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .control-group {
+            background: #f3f4f6;
+            padding: 0.25rem;
+            border-radius: 0.5rem;
+            display: flex;
+        }
+
+        .control-btn {
+            padding: 0.5rem 1rem;
+            background: transparent;
+            border: none;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .control-btn.active {
+            background: #002366;
+            color: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .control-btn:not(.active):hover {
+            background: #e5e7eb;
+        }
+
+        /* Calendar Grid */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 1200px) {
+            .calendar-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .calendar-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .month-calendar {
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+
+        .month-header {
+            background: #f8fafc;
+            padding: 0.75rem;
+            text-align: center;
+            font-weight: 600;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .calendar-month-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: #e5e7eb;
+        }
+
+        .calendar-day-header {
+            background: #374151;
+            color: white;
+            padding: 0.5rem 0.25rem;
+            text-align: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .calendar-day {
+            background: white;
+            aspect-ratio: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .calendar-day:hover {
+            transform: scale(1.1);
+            z-index: 10;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .day-j {
+            background: #fca5a5;
+            color: #7f1d1d;
+            font-weight: 600;
+        }
+
+        .day-n {
+            background: #a5b4fc;
+            color: #312e81;
+            font-weight: 600;
+        }
+
+        .day-24h {
+            background: #86efac;
+            color: #14532d;
+            font-weight: 600;
+        }
+
+        .day-repos {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        /* Legend */
+        .calendar-legend {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .legend-color {
+            width: 1rem;
+            height: 1rem;
+            border-radius: 0.25rem;
+        }
+
+        /* Tooltips */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 12rem;
+            background-color: #1f2937;
+            color: white;
+            text-align: left;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            position: absolute;
+            z-index: 50;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -6rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.75rem;
+            line-height: 1.2;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Transport Section */
+        .transport-section {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-top: 2rem;
+        }
+
+        .transport-title {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 2rem;
+        }
+
+        .transport-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .transport-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .transport-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .transport-results {
+            background: #f8fafc;
+            border-radius: 0.75rem;
+            padding: 2rem;
+        }
+
+        .cost-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .cost-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .cost-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+        }
+
+        .cost-label-12h {
+            color: #dc2626;
+        }
+
+        .cost-label-24h {
+            color: #16a34a;
+        }
+
+        .cost-amount {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .cost-amount-12h {
+            color: #dc2626;
+        }
+
+        .cost-amount-24h {
+            color: #16a34a;
+        }
+
+        .savings-highlight {
+            background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+            border: 2px solid #16a34a;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .savings-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #15803d;
+            margin-bottom: 0.5rem;
+        }
+
+        .savings-amount {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #15803d;
+        }
+
+        /* Total Savings */
+        .total-savings {
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+            border: 4px solid #3b82f6;
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .total-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e40af;
+            margin-bottom: 0.5rem;
+        }
+
+        .total-subtitle {
+            color: #6b7280;
+            margin-bottom: 1rem;
+        }
+
+        .total-amount {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #1e40af;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.8;
+                transform: scale(1.05);
+            }
+        }
+
+        /* Comparateur Visuel Styles */
+        .view-toggle {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .toggle-container {
+            background: #f3f4f6;
+            padding: 0.5rem;
+            border-radius: 0.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .toggle-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            background: transparent;
+            color: #6b7280;
+        }
+
+        .toggle-btn.active {
+            background: #002366;
+            color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .toggle-btn:not(.active):hover {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        /* Calendar comparison styles */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .comparison-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .comparison-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .comparison-title-12h {
+            color: #dc2626;
+        }
+
+        .comparison-title-24h {
+            color: #16a34a;
+        }
+
+        .calendar-comparison {
+            margin-bottom: 1.5rem;
+        }
+
+        .calendar-grid-simple {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+            margin-bottom: 1rem;
+        }
+
+        .day-header {
+            background: #374151;
+            color: white;
+            padding: 0.5rem 0.25rem;
+            text-align: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .day-cell {
+            aspect-ratio: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.9rem;
+            border-radius: 0.25rem;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .day-cell:hover {
+            transform: scale(1.05);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .work-12h {
+            background-color: #fee2e2;
+            color: #991b1b;
+            font-weight: 600;
+            border: 1px solid #fecaca;
+        }
+
+        .work-24h {
+            background-color: #dcfce7;
+            color: #166534;
+            font-weight: 600;
+            border: 1px solid #bbf7d0;
+        }
+
+        .rest {
+            background-color: #f3f4f6;
+            color: #4b5563;
+        }
+
+        .cp-day {
+            background-color: #d1d5db;
+            color: #1f2937;
+            font-weight: 600;
+            border: 1px solid #9ca3af;
+        }
+
+        /* Statistics */
+        .stats-section {
+            border-top: 2px solid #e5e7eb;
+            padding-top: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .stats-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-align: center;
+            color: #374151;
+            margin-bottom: 1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .stat-card {
+            background: #ffffff;
+            border-radius: 0.75rem;
+            padding: 1.5rem 1rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .stat-card-12h {
+            border-color: #dc2626;
+        }
+
+        .stat-card-24h {
+            border-color: #16a34a;
+        }
+
+        .stat-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-icon-12h {
+            color: #dc2626;
+        }
+
+        .stat-icon-24h {
+            color: #16a34a;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .stat-value-12h {
+            color: #dc2626;
+        }
+
+        .stat-value-24h {
+            color: #16a34a;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #6b7280;
+            margin-top: 0.5rem;
+        }
+
+        .stat-avg {
+            font-size: 0.8rem;
+            color: #4b5563;
+            font-weight: 500;
+            margin-top: 0.25rem;
+        }
+
+        .stat-note {
+            font-size: 0.8rem;
+            color: #4b5563;
+            font-weight: 500;
+            margin-top: 0.5rem;
+            line-height: 1.2;
+        }
+
+        /* Info boxes */
+        .info-box {
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .info-box-teal {
+            background: linear-gradient(135deg, #f0fdfa, #ccfbf1);
+            border-left: 4px solid #14b8a6;
+        }
+
+        .info-box-blue {
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            border-left: 4px solid #3b82f6;
+        }
+
+        .info-box-yellow {
+            background: linear-gradient(135deg, #fefce8, #fef3c7);
+            border-left: 4px solid #f59e0b;
+        }
+
+        .info-icon {
+            font-size: 2rem;
+            color: #14b8a6;
+        }
+
+        .info-icon-blue {
+            color: #3b82f6;
+        }
+
+        .info-icon-yellow {
+            color: #f59e0b;
+        }
+
+        .info-content h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-content-teal h3 {
+            color: #0f766e;
+        }
+
+        .info-content-blue h3 {
+            color: #1e40af;
+        }
+
+        .info-content-yellow h3 {
+            color: #d97706;
+        }
+
+        .info-content p {
+            color: #374151;
+            line-height: 1.5;
+        }
+
+        /* Hidden sections */
+        .analysis-section.hidden {
+            display: none;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .planning-comparison {
+                grid-template-columns: 1fr;
+            }
+            
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .transport-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .input-group {
+                grid-template-columns: 1fr;
+            }
+            
+            .cost-comparison {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .nav-divider {
+                width: 100%;
+                height: 1px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav-bar">
+        <div class="nav-content">
+            <a href="#simulateur" class="nav-step active" id="nav-simulateur">
+                <span class="nav-icon">💰</span>
+                <span>Étape 1 : Simulateur Financier</span>
+            </a>
+            <div class="nav-divider"></div>
+            <a href="#comparateur" class="nav-step" id="nav-comparateur">
+                <span class="nav-icon">📊</span>
+                <span>Étape 2 : Comparateur Visuel</span>
+            </a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Section 1: Simulateur Financier -->
+        <section id="simulateur" class="section">
+            <div class="section-header">
+                <h1 class="section-title">💸 Simulateur Financier et Transport</h1>
+                <p class="section-subtitle">Découvrez l'impact financier du passage au rythme 24h</p>
+            </div>
+
+            <div class="grid-2">
+                <!-- Colonne de gauche : Rémunération -->
+                <div>
+                    <!-- Section Rémunération avec fond coloré -->
+                    <div class="remuneration-section">
+                        <h3 class="remuneration-title">
+                            <span>💸</span>
+                            <span>Rémunération</span>
+                        </h3>
+                        <div class="input-group">
+                            <div class="form-group">
+                                <label for="base-treatment" class="form-label">Traitement de base (€)</label>
+                                <input type="number" id="base-treatment" value="2180.44" step="0.01" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label for="majoration-rate" class="form-label">Taux Majoration (€/h)</label>
+                                <input type="number" id="majoration-rate" value="9.675" step="0.001" class="form-input">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cartes de comparaison des plannings -->
+                    <div class="planning-comparison">
+                        <div id="card-12h" class="planning-card planning-card-12h">
+                            <h4 class="planning-title planning-title-12h">📅 Planning Actuel 12h</h4>
+                            <p class="planning-subtitle">🔄 Calculé d'après votre planning ci-dessus</p>
+                            <p class="planning-subtitle">Salaire Brut Mensuel Estimé</p>
+                            <p id="result-12h" class="salary-amount salary-amount-12h">0,00 €</p>
+                            <div class="majorations-details">
+                                <h5 class="majorations-title">Détail majorations (total/an)</h5>
+                                <div class="majoration-line">
+                                    <span>🌙 Nuit:</span>
+                                    <span class="majoration-value"><span id="details-12h-night-hours">0</span>h (+<span id="details-12h-night-pay">0.00</span>€)</span>
+                                </div>
+                                <div class="majoration-line">
+                                    <span>🗓️ Dimanche:</span>
+                                    <span class="majoration-value"><span id="details-12h-sunday-hours">0</span>h (+<span id="details-12h-sunday-pay">0.00</span>€)</span>
+                                </div>
+                                <div class="majoration-line">
+                                    <span>🎉 Férié:</span>
+                                    <span class="majoration-value"><span id="details-12h-holiday-hours">0</span>h (+<span id="details-12h-holiday-pay">0.00</span>€)</span>
+                                </div>
+                                <div class="majoration-line">
+                                    <span>✨ H. majorées (+25%):</span>
+                                    <span class="majoration-value"><span id="details-12h-overtime40-hours">0</span>h (+<span id="details-12h-overtime40-pay">0.00</span>€)</span>
+                                </div>
+                                <div class="majoration-line">
+                                    <span>⏰ Heures sup. (+25%):</span>
+                                    <span class="majoration-value"><span id="details-12h-overtime25-hours">0</span>h (+<span id="details-12h-overtime25-pay">0.00</span>€)</span>
+                                </div>
+                                <div class="majoration-line">
+                                    <span>⚡ Heures sup. (+50%):</span>
+                                    <span class="majoration-value"><span id="details-12h-overtime50-hours">0</span>h (+<span id="details-12h-overtime50-pay">0.00</span>€)</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="card-24h" class="planning-card planning-card-24h">
+                            <h4 class="planning-title planning-title-24h">✨ Proposition Planning 24h</h4>
+                            <p class="planning-subtitle">🔄 Calculé d'après votre planning ci-dessus</p>
+                            <p class="planning-subtitle">Salaire Brut Mensuel Estimé</p>
+                            <p id="result-24h" class="salary-amount salary-amount-24h">0,00 €</p>
+                            <div class="majorations-details">
+                                <h5 class="majorations-title">Détail majorations (total/an)</h5>
+                                <div class="majoration-line">
+                                    <span>🌙 Nuit:</span>
+                                    <span class="majoration-value"><span id="details-24h-night-hours">0</span>h (+<span id="details-24h-night-pay">0.00</span>€)</span>
+                                </div>
+                                <div class="majoration-line">
+                                    <span>🗓️ Dimanche:</span>
+                                    <span class="majoration-value"><span id="details-24h-sunday-hours">0</span>h (+<span id="details-24h-sunday-pay">0.00</span>€)</span>
+                                </div>
+                                <div class="majoration-line">
+                                    <span>🎉 Férié:</span>
+                                    <span class="majoration-value"><span id="details-24h-holiday-hours">0</span>h (+<span id="details-24h-holiday-pay">0.00</span>€)</span>
+                                </div>
+                                 <div class="majoration-line">
+                                    <span>✨ H. majorées (+25%):</span>
+                                    <span class="majoration-value"><span id="details-24h-overtime40-hours">0</span>h (+<span id="details-24h-overtime40-pay">0.00</span>€)</span>
+                                </div>
+                                <div class="majoration-line">
+                                    <span>⏰ Heures sup. (+25%):</span>
+                                    <span class="majoration-value"><span id="details-24h-overtime25-hours">0</span>h (+<span id="details-24h-overtime25-pay">0.00</span>€)</span>
+                                </div>
+                                <div class="majoration-line">
+                                    <span>⚡ Heures sup. (+50%):</span>
+                                    <span class="majoration-value"><span id="details-24h-overtime50-hours">0</span>h (+<span id="details-24h-overtime50-pay">0.00</span>€)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center" style="text-align: center; margin-top: 1.5rem;">
+                        <p style="font-size: 1.3rem; font-weight: 700;">💰 Gain Annuel Brut Estimé : <span id="gain-annuel" style="color: #3b82f6;">0,00 €</span></p>
+                    </div>
+                </div>
+
+                <!-- Colonne de droite : Planning Interactif -->
+                <div class="calendar-section">
+                    <div class="calendar-header">
+                        <h3 class="calendar-title">
+                            <span>📅</span>
+                            <span>Planning Annuel Interactif</span>
+                        </h3>
+                        <div class="hours-display">
+                            <p class="hours-text">⏱️ Total Heures: <span id="total-hours-display">0</span> / 1501h</p>
+                            <div class="progress-container">
+                                <div id="hours-progress-bar" class="progress-bar"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="calendar-controls">
+                        <div class="control-group">
+                            <button id="btn-edit-12h" class="control-btn active">🔴 Modifier Planning 12h</button>
+                            <button id="btn-edit-24h" class="control-btn">🟢 Modifier Planning 24h</button>
+                        </div>
+                    </div>
+                    
+                    <div id="annual-calendar-container" class="calendar-grid"></div>
+                    
+                    <div class="calendar-legend">
+                        <div class="legend-item">
+                            <div class="legend-color day-j"></div>
+                            <span>Jour (J)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color day-n"></div>
+                            <span>Nuit (N)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color day-24h"></div>
+                            <span>24h</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color day-repos"></div>
+                            <span>Repos</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section Transport -->
+            <div class="transport-section">
+                <h2 class="transport-title">
+                    <span>🚗</span>
+                    <span>Coûts de Transport Annuels</span>
+                </h2>
+                
+                <div class="transport-grid">
+                    <div class="transport-inputs">
+                        <div class="form-group">
+                            <label for="distance" class="form-label">
+                                🛣️ Distance (km aller)
+                                <div class="tooltip" style="display: inline-block; margin-left: 0.5rem;">
+                                    <span style="color: #9ca3af; cursor: help;">ℹ️</span>
+                                    <span class="tooltiptext">Basé sur la distance moyenne des trajets domicile-travail en Ile-de-France</span>
+                                </div>
+                            </label>
+                            <input type="number" id="distance" value="40" class="form-input transport-input">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="consumption" class="form-label">
+                                ⛽ Consommation (L/100km)
+                                <div class="tooltip" style="display: inline-block; margin-left: 0.5rem;">
+                                    <span style="color: #9ca3af; cursor: help;">ℹ️</span>
+                                    <span class="tooltiptext">Basé sur la consommation moyenne d'un véhicule de type berline compacte</span>
+                                </div>
+                            </label>
+                            <input type="number" id="consumption" value="6.5" step="0.1" class="form-input transport-input">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="fuel-price" class="form-label">
+                                💰 Prix Carburant (€/L)
+                                <div class="tooltip" style="display: inline-block; margin-left: 0.5rem;">
+                                    <span style="color: #9ca3af; cursor: help;">ℹ️</span>
+                                    <span class="tooltiptext">Basé sur le prix moyen constaté</span>
+                                </div>
+                            </label>
+                            <input type="number" id="fuel-price" value="1.70" step="0.01" class="form-input transport-input">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="maintenance" class="form-label">
+                                🔧 Entretien + Usure (€/km)
+                                <div class="tooltip" style="display: inline-block; margin-left: 0.5rem;">
+                                    <span style="color: #9ca3af; cursor: help;">ℹ️</span>
+                                    <span class="tooltiptext">Estimation moyenne nationale (entretien + usure + dépréciation du véhicule)</span>
+                                </div>
+                            </label>
+                            <input type="number" id="maintenance" value="0.25" step="0.01" class="form-input transport-input">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="toll" class="form-label">
+                                🛣️ Péage (€ aller)
+                                <div class="tooltip" style="display: inline-block; margin-left: 0.5rem;">
+                                    <span style="color: #9ca3af; cursor: help;">ℹ️</span>
+                                    <span class="tooltiptext">Modifiez cette valeur si vous utilisez des autoroutes à péage</span>
+                                </div>
+                            </label>
+                            <input type="number" id="toll" value="0" step="0.1" class="form-input transport-input">
+                        </div>
+                    </div>
+                    
+                    <div class="transport-results">
+                        <div class="cost-comparison">
+                            <div class="cost-item">
+                                <div class="cost-label cost-label-12h">
+                                    <span>🔴 Coût Planning 12h</span>
+                                    <div class="tooltip" style="display: inline-block; margin-left: 0.5rem;">
+                                        <span style="color: #9ca3af; cursor: help;">ℹ️</span>
+                                        <span id="tooltip-12h" class="tooltiptext">Détail du calcul...</span>
+                                    </div>
+                                </div>
+                                <p id="cost-12h" class="cost-amount cost-amount-12h">0 €</p>
+                            </div>
+                            
+                            <div class="cost-item">
+                                <div class="cost-label cost-label-24h">
+                                    <span>🟢 Coût Planning 24h</span>
+                                    <div class="tooltip" style="display: inline-block; margin-left: 0.5rem;">
+                                        <span style="color: #9ca3af; cursor: help;">ℹ️</span>
+                                        <span id="tooltip-24h" class="tooltiptext">Détail du calcul...</span>
+                                    </div>
+                                </div>
+                                <p id="cost-24h" class="cost-amount cost-amount-24h">0 €</p>
+                            </div>
+                        </div>
+                        
+                        <div class="savings-highlight">
+                            <p class="savings-title">💚 Économie Annuelle de Transport</p>
+                            <p id="savings-transport" class="savings-amount">0 €</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total des économies -->
+            <div class="total-savings">
+                <h2 class="total-title">🎯 Économie Totale Annuelle Estimée</h2>
+                <p class="total-subtitle">(Gain de salaire + Économie de transport)</p>
+                <p id="total-savings" class="total-amount">0,00 €</p>
+            </div>
+        </section>
+
+        <!-- Section 2: Comparateur Visuel -->
+        <section id="comparateur" class="section">
+            <div class="section-header">
+                <h1 class="section-title">📊 Comparaison des Rythmes de Travail</h1>
+                <p class="section-subtitle">Visualisation d'un mois type pour un agent SSIAP</p>
+            </div>
+
+            <div class="view-toggle">
+                <div class="toggle-container">
+                    <button id="btn-avec" class="toggle-btn active">✅ Avec Congés (Réel)</button>
+                    <button id="btn-sans" class="toggle-btn">📊 Sans Congés (Théorique)</button>
+                </div>
+            </div>
+
+            <div class="comparison-grid">
+                <!-- Planning 12H -->
+                <div class="comparison-card">
+                    <h2 class="comparison-title comparison-title-12h">🔴 Planning Actuel 12h</h2>
+                    <div id="calendar-12h" class="calendar-comparison"></div>
+                    <div class="stats-section">
+                        <h3 class="stats-title">📈 Statistiques du mois</h3>
+                        <div class="stats-grid">
+                            <div class="stat-card stat-card-12h">
+                                <div class="stat-icon stat-icon-12h">💼</div>
+                                <p id="stat-work-12h" class="stat-value stat-value-12h">0</p>
+                                <p class="stat-label">Vacations ce mois-ci</p>
+                                <p id="stat-avg-12h" class="stat-avg">(Moy. 0/mois)</p>
+                            </div>
+                            <div class="stat-card stat-card-12h">
+                                <div class="stat-icon stat-icon-12h">🛏️</div>
+                                <p id="stat-rest-12h" class="stat-value stat-value-12h">0</p>
+                                <p class="stat-label">Plus longue série de repos</p>
+                                <p id="stat-rest-note-12h" class="stat-note"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Planning 24H -->
+                <div class="comparison-card">
+                    <h2 class="comparison-title comparison-title-24h">🟢 Proposition Planning 24h</h2>
+                    <div id="calendar-24h" class="calendar-comparison"></div>
+                    <div class="stats-section">
+                        <h3 class="stats-title">📈 Statistiques du mois</h3>
+                        <div class="stats-grid">
+                            <div class="stat-card stat-card-24h">
+                                <div class="stat-icon stat-icon-24h">💼</div>
+                                <p id="stat-work-24h" class="stat-value stat-value-24h">0</p>
+                                <p class="stat-label">Vacations ce mois-ci</p>
+                                <p id="stat-avg-24h" class="stat-avg">(Moy. 0/mois)</p>
+                            </div>
+                            <div class="stat-card stat-card-24h">
+                                <div class="stat-icon stat-icon-24h">🏖️</div>
+                                <p id="stat-rest-24h" class="stat-value stat-value-24h">0</p>
+                                <p class="stat-label">Plus longue série de repos</p>
+                                <p id="stat-rest-note-24h" class="stat-note"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="info-box info-box-teal">
+                <div>
+                    <span class="info-icon">⭐</span>
+                </div>
+                <div class="info-content info-content-teal">
+                    <h3>Optimisation des Congés : Un Avantage Clé</h3>
+                    <p>Avec le planning en 24h, les jours de repos situés entre deux vacations posées en congé ne sont <strong>pas décomptés</strong>. Chaque jour de congé posé est ainsi pleinement optimisé par rapport au système actuel.</p>
+                </div>
+            </div>
+
+            <div id="analysis-avec" class="info-box info-box-blue analysis-section">
+                <div>
+                    <span class="info-icon info-icon-blue">📊</span>
+                </div>
+                <div class="info-content info-content-blue">
+                    <h3>Analyse du mois réel (Avec Congés - 1501h/an)</h3>
+                    <p>Cette vue illustre le planning annuel moyen, où les congés sont lissés pour respecter le contrat de 1501 heures. On constate que <strong>le nombre de vacations est divisé par deux</strong> (10,4 en 12h contre 5,2 en 24h) et que le rythme 24h génère des <strong>périodes de repos consécutives plus longues</strong>.</p>
+                </div>
+            </div>
+            
+            <div id="analysis-sans" class="info-box info-box-yellow analysis-section hidden">
+                <div>
+                    <span class="info-icon info-icon-yellow">🧮</span>
+                </div>
+                <div class="info-content info-content-yellow">
+                    <h3>Analyse du cycle théorique (Sans Congés)</h3>
+                    <p>Cette vue représente le cycle de travail de base. Elle met en évidence la fréquence de travail du cycle en 24h, qui se traduit par une présence sur site réduite par rapport au cycle en 12h (moyenne de 13,8 vacations contre 7,6).</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Navigation
+            const navSimulateur = document.getElementById('nav-simulateur');
+            const navComparateur = document.getElementById('nav-comparateur');
+
+            function updateNavigation() {
+                const scrollY = window.scrollY;
+                const simulateurSection = document.getElementById('simulateur');
+                const comparateurSection = document.getElementById('comparateur');
+                
+                const simulateurTop = simulateurSection.offsetTop - 100;
+                const comparateurTop = comparateurSection.offsetTop - 100;
+                
+                if (scrollY >= comparateurTop) {
+                    navSimulateur.classList.remove('active');
+                    navComparateur.classList.add('active');
+                } else {
+                    navSimulateur.classList.add('active');
+                    navComparateur.classList.remove('active');
+                }
+            }
+
+            window.addEventListener('scroll', updateNavigation);
+
+            // --- LOGIC FOR COMPARATEUR ---
+            const comparateurElements = {
+                btnAvec: document.getElementById('btn-avec'),
+                btnSans: document.getElementById('btn-sans'),
+                calendar12h: document.getElementById('calendar-12h'),
+                calendar24h: document.getElementById('calendar-24h'),
+                analysisAvec: document.getElementById('analysis-avec'),
+                analysisSans: document.getElementById('analysis-sans'),
+                stats: {
+                    work12h: document.getElementById('stat-work-12h'),
+                    avg12h: document.getElementById('stat-avg-12h'),
+                    rest12h: document.getElementById('stat-rest-12h'),
+                    restNote12h: document.getElementById('stat-rest-note-12h'),
+                    work24h: document.getElementById('stat-work-24h'),
+                    avg24h: document.getElementById('stat-avg-24h'),
+                    rest24h: document.getElementById('stat-rest-24h'),
+                    restNote24h: document.getElementById('stat-rest-note-24h'),
+                }
+            };
+            
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = today.getMonth() + 1;
+            const daysInMonth = new Date(year, month, 0).getDate();
+            const firstDayOfMonth = new Date(year, month - 1, 1).getDay();
+            const adjustedFirstDay = (firstDayOfMonth === 0) ? 6 : firstDayOfMonth - 1;
+
+            const monthlyAverages = {
+                '12h_avec': 10.42, '24h_avec': 5.21, '12h_sans': 13.83, '24h_sans': 7.61
+            };
+
+            const pattern12hSansConges = (day, index) => {
+                const cycle = [true, true, false, false, true, true, true, false, false, false, false];
+                return cycle[(index + 1) % cycle.length];
+            };
+            const pattern24hSansConges = (day, index) => (index % 4 === 0);
+
+            const pattern12hAvecConges = (day, index) => {
+                const daysToRemove = [11, 12, 22, 23, 24];
+                if (daysToRemove.includes(day) && pattern12hSansConges(day, index)) return 'CP';
+                return pattern12hSansConges(day, index);
+            };
+            const pattern24hAvecConges = (day, index) => {
+                const daysToRemove = [9, 13, 17];
+                if (daysToRemove.includes(day) && pattern24hSansConges(day, index)) return 'CP';
+                return pattern24hSansConges(day, index);
+            };
+            
+            function calculateStats(pattern) {
+                let workDays = 0, maxRest = 0, currentRest = 0;
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const dayType = pattern(day, adjustedFirstDay + day - 1);
+                    if (dayType === true) {
+                        workDays++;
+                        if (currentRest > maxRest) maxRest = currentRest;
+                        currentRest = 0;
+                    } else {
+                        currentRest++;
+                    }
+                }
+                if (currentRest > maxRest) maxRest = currentRest;
+                return { workDays, maxRest };
+            }
+
+            function createCalendarHTML(pattern, type) {
+                let html = '<div class="calendar-grid-simple">';
+                ['Lu', 'Ma', 'Me', 'Je', 'Ve', 'Sa', 'Di'].forEach(day => html += `<div class="day-header">${day}</div>`);
+                for (let i = 0; i < adjustedFirstDay; i++) html += `<div></div>`;
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const dayType = pattern(day, adjustedFirstDay + day - 1);
+                    let dayClass = 'rest', dayContent = day;
+                    if (dayType === true) dayClass = type === '12h' ? 'work-12h' : 'work-24h';
+                    else if (dayType === 'CP') { dayClass = 'cp-day'; dayContent = 'CP'; }
+                    html += `<div class="day-cell ${dayClass}">${dayContent}</div>`;
+                }
+                return html + '</div>';
+            }
+
+            function updateComparateurView(view) {
+                const isAvec = view === 'avec';
+                const pattern12h = isAvec ? pattern12hAvecConges : pattern12hSansConges;
+                const pattern24h = isAvec ? pattern24hAvecConges : pattern24hSansConges;
+                const stats12h = calculateStats(pattern12h);
+                const stats24h = calculateStats(pattern24h);
+
+                comparateurElements.calendar12h.innerHTML = createCalendarHTML(pattern12h, '12h');
+                comparateurElements.calendar24h.innerHTML = createCalendarHTML(pattern24h, '24h');
+                
+                comparateurElements.stats.work12h.textContent = stats12h.workDays;
+                comparateurElements.stats.work24h.textContent = stats24h.workDays;
+                comparateurElements.stats.rest24h.textContent = stats24h.maxRest;
+
+                if (isAvec) {
+                    comparateurElements.stats.rest12h.textContent = "8 x 2";
+                    comparateurElements.stats.restNote12h.innerHTML = "Moy : entre 7 et 9 en posant 2 vacations<br>entre 8 et 13 en posant 3 vacations";
+                    comparateurElements.stats.restNote24h.innerHTML = "Moy : 11 en posant 2 vacations<br>15 en posant 3 vacations";
+                } else {
+                    comparateurElements.stats.rest12h.textContent = stats12h.maxRest;
+                    comparateurElements.stats.restNote12h.innerHTML = "";
+                    comparateurElements.stats.restNote24h.innerHTML = "";
+                }
+                
+                const avg12h = isAvec ? monthlyAverages['12h_avec'] : monthlyAverages['12h_sans'];
+                const avg24h = isAvec ? monthlyAverages['24h_avec'] : monthlyAverages['24h_sans'];
+                comparateurElements.stats.avg12h.textContent = `(Moy. ${avg12h.toFixed(2).replace('.',',')}/mois)`;
+                comparateurElements.stats.avg24h.textContent = `(Moy. ${avg24h.toFixed(2).replace('.',',')}/mois)`;
+
+                comparateurElements.analysisAvec.classList.toggle('hidden', !isAvec);
+                comparateurElements.analysisSans.classList.toggle('hidden', isAvec);
+                comparateurElements.btnAvec.classList.toggle('active', isAvec);
+                comparateurElements.btnSans.classList.toggle('active', !isAvec);
+            }
+
+            comparateurElements.btnAvec.addEventListener('click', () => updateComparateurView('avec'));
+            comparateurElements.btnSans.addEventListener('click', () => updateComparateurView('sans'));
+            updateComparateurView('avec');
+
+            // --- LOGIC FOR SIMULATEUR ---
+            const baseTreatmentInput = document.getElementById('base-treatment');
+            const majorationRateInput = document.getElementById('majoration-rate');
+            const transportInputs = document.querySelectorAll('.transport-input');
+            let editMode = '12h';
+
+            const PUBLIC_HOLIDAYS_2025 = new Set(['2025-01-01', '2025-04-21', '2025-05-01', '2025-05-08', '2025-05-29', '2025-06-09', '2025-07-14', '2025-08-15', '2025-11-01', '2025-11-11', '2025-12-25']);
+            const PUBLIC_HOLIDAYS_2026 = new Set(['2026-01-01', '2026-04-06', '2026-05-01', '2026-05-08', '2026-05-14', '2026-05-25']);
+            
+            let schedule12h = {};
+            let schedule24h = {};
+
+            const initialSchedule12h = [
+                { date: '2025-04-01', type: 'J' }, { date: '2025-04-02', type: 'N' }, { date: '2025-04-03', type: 'N' }, { date: '2025-04-07', type: 'J' }, { date: '2025-04-08', type: 'N' }, { date: '2025-04-09', type: 'N' }, { date: '2025-04-23', type: 'J' }, { date: '2025-04-24', type: 'J' }, { date: '2025-04-27', type: 'J' }, { date: '2025-04-28', type: 'J' }, { date: '2025-04-29', type: 'J' },
+                { date: '2025-05-03', type: 'J' }, { date: '2025-05-04', type: 'N' }, { date: '2025-05-05', type: 'N' }, { date: '2025-05-10', type: 'J' }, { date: '2025-05-11', type: 'J' }, { date: '2025-05-15', type: 'N' }, { date: '2025-05-16', type: 'N' }, { date: '2025-05-21', type: 'N' }, { date: '2025-05-22', type: 'N' }, { date: '2025-05-26', type: 'J' }, { date: '2025-05-27', type: 'N' },
+                { date: '2025-06-01', type: 'J' }, { date: '2025-06-02', type: 'J' }, { date: '2025-06-07', type: 'N' }, { date: '2025-06-08', type: 'N' }, { date: '2025-06-12', type: 'J' }, { date: '2025-06-13', type: 'J' }, { date: '2025-06-14', type: 'N' }, { date: '2025-06-18', type: 'J' }, { date: '2025-06-19', type: 'J' }, { date: '2025-06-20', type: 'N' }, { date: '2025-06-24', type: 'J' }, { date: '2025-06-25', type: 'J' }, { date: '2025-06-26', type: 'J' }, { date: '2025-06-30', type: 'J' },
+                { date: '2025-07-01', type: 'N' }, { date: '2025-07-06', type: 'J' }, { date: '2025-07-07', type: 'N' }, { date: '2025-07-12', type: 'J' }, { date: '2025-07-13', type: 'J' }, { date: '2025-07-16', type: 'J' }, { date: '2025-07-17', type: 'J' }, { date: '2025-07-18', type: 'N' }, { date: '2025-07-24', type: 'J' }, { date: '2025-07-26', type: 'N' },
+                { date: '2025-08-17', type: 'J' }, { date: '2025-08-18', type: 'J' }, { date: '2025-08-22', type: 'J' }, { date: '2025-08-23', type: 'N' }, { date: '2025-08-27', type: 'J' }, { date: '2025-08-28', type: 'J' }, { date: '2025-08-29', type: 'J' },
+                { date: '2025-09-02', type: 'J' }, { date: '2025-09-03', type: 'J' }, { date: '2025-09-12', type: 'J' }, { date: '2025-09-13', type: 'J' }, { date: '2025-09-14', type: 'J' }, { date: '2025-09-17', type: 'J' }, { date: '2025-09-18', type: 'J' }, { date: '2025-09-19', type: 'N' }, { date: '2025-09-23', type: 'J' }, { date: '2025-09-25', type: 'N' }, { date: '2025-09-26', type: 'N' },
+                { date: '2025-10-05', type: 'J' }, { date: '2025-10-06', type: 'J' }, { date: '2025-10-10', type: 'J' }, { date: '2025-10-11', type: 'N' }, { date: '2025-10-17', type: 'N' }, { date: '2025-10-21', type: 'J' }, { date: '2025-10-22', type: 'J' },
+                { date: '2025-11-01', type: 'J' }, { date: '2025-11-02', type: 'J' }, { date: '2025-11-11', type: 'J' }, { date: '2025-11-12', type: 'J' }, { date: '2025-11-13', type: 'N' }, { date: '2025-11-17', type: 'J' }, { date: '2025-11-18', type: 'N' }, { date: '2025-11-23', type: 'J' }, { date: '2025-11-24', type: 'J' }, { date: '2025-11-27', type: 'J' }, { date: '2025-11-28', type: 'J' },
+                { date: '2025-12-02', type: 'J' }, { date: '2025-12-03', type: 'N' }, { date: '2025-12-04', type: 'N' }, { date: '2025-12-13', type: 'J' }, { date: '2025-12-14', type: 'N' }, { date: '2025-12-15', type: 'N' }, { date: '2025-12-20', type: 'J' }, { date: '2025-12-21', type: 'N' }, { date: '2025-12-22', type: 'N' }, { date: '2025-12-27', type: 'J' }, { date: '2025-12-28', type: 'J' }, { date: '2025-12-30', type: 'J' }, { date: '2025-12-31', type: 'N' },
+                { date: '2026-01-01', type: 'N' }, { date: '2026-01-05', type: 'J' }, { date: '2026-01-06', type: 'N' }, { date: '2026-01-07', type: 'N' }, { date: '2026-01-16', type: 'J' }, { date: '2026-01-17', type: 'J' }, { date: '2026-01-18', type: 'N' }, { date: '2026-01-25', type: 'J' }, { date: '2026-01-26', type: 'J' }, { date: '2026-01-27', type: 'J' }, { date: '2026-01-31', type: 'J' },
+                { date: '2026-02-01', type: 'N' }, { date: '2026-02-02', type: 'N' }, { date: '2026-02-11', type: 'J' }, { date: '2026-02-12', type: 'J' }, { date: '2026-02-13', type: 'N' }, { date: '2026-02-23', type: 'J' }, { date: '2026-02-24', type: 'N' },
+                { date: '2026-03-01', type: 'J' }, { date: '2026-03-02', type: 'J' }, { date: '2026-03-06', type: 'J' }, { date: '2026-03-07', type: 'N' }, { date: '2026-03-08', type: 'N' }, { date: '2026-03-12', type: 'J' }, { date: '2026-03-13', type: 'J' }, { date: '2026-03-14', type: 'N' }, { date: '2026-03-19', type: 'J' }, { date: '2026-03-20', type: 'N' }, { date: '2026-03-30', type: 'J' }, { date: '2026-03-31', type: 'N' }
+            ];
+            initialSchedule12h.forEach(s => schedule12h[s.date] = s.type);
+            
+            const initialSchedule24h = [
+                { date: "2025-04-05", type: "24h" }, { date: "2025-04-09", type: "24h" }, { date: "2025-04-13", type: "24h" }, { date: "2025-04-17", type: "24h" }, { date: "2025-04-21", type: "24h" },
+                { date: "2025-05-03", type: "24h" }, { date: "2025-05-07", type: "24h" }, { date: "2025-05-11", type: "24h" }, { date: "2025-05-27", type: "24h" }, { date: "2025-05-31", type: "24h" },
+                { date: "2025-06-04", type: "24h" }, { date: "2025-06-08", type: "24h" }, { date: "2025-06-20", type: "24h" }, { date: "2025-06-24", type: "24h" }, { date: "2025-06-28", type: "24h" },
+                { date: "2025-07-02", type: "24h" }, { date: "2025-07-06", type: "24h" }, { date: "2025-07-10", type: "24h" }, { date: "2025-07-14", type: "24h" }, { date: "2025-07-30", type: "24h" },
+                { date: "2025-08-03", type: "24h" }, { date: "2025-08-07", type: "24h" }, { date: "2025-08-11", type: "24h" }, { date: "2025-08-15", type: "24h" }, { date: "2025-08-31", type: "24h" },
+                { date: "2025-09-04", type: "24h" }, { date: "2025-09-08", type: "24h" }, { date: "2025-09-12", type: "24h" }, { date: "2025-09-28", type: "24h" },
+                { date: "2025-10-02", type: "24h" }, { date: "2025-10-14", type: "24h" }, { date: "2025-10-18", type: "24h" }, { date: "2025-10-22", type: "24h" }, { date: "2025-10-26", type: "24h" }, { date: "2025-10-30", type: "24h" },
+                { date: "2025-11-11", type: "24h" }, { date: "2025-11-15", type: "24h" }, { date: "2025-11-19", type: "24h" }, { date: "2025-11-23", type: "24h" }, { date: "2025-11-27", type: "24h" },
+                { date: "2025-12-01", type: "24h" }, { date: "2025-12-05", type: "24h" }, { date: "2025-12-21", type: "24h" }, { date: "2025-12-25", type: "24h" }, { date: "2025-12-29", type: "24h" },
+                { date: "2026-01-02", type: "24h" }, { date: "2026-01-14", type: "24h" }, { date: "2026-01-18", type: "24h" }, { date: "2026-01-22", type: "24h" }, { date: "2026-01-26", type: "24h" }, { date: "2026-01-30", type: "24h" },
+                { date: "2026-02-11", type: "24h" }, { date: "2026-02-15", type: "24h" }, { date: "2026-02-19", type: "24h" }, { date: "2026-02-23", type: "24h" }, { date: "2026-02-27", type: "24h" },
+                { date: "2026-03-11", type: "24h" }, { date: "2026-03-15", type: "24h" }, { date: "2026-03-19", type: "24h" }, { date: "2026-03-23", type: "24h" }, { date: "2026-03-27", type: "24h" }, { date: "2026-03-31", type: "24h" }
+            ];
+            initialSchedule24h.forEach(s => schedule24h[s.date] = s.type);
+            
+            function calculateAllMajorations(schedule, shiftDuration) {
+                const weeklyHours = {};
+                const monthlyTotals = {};
+                let totalHours = 0;
+
+                function getWeekStart(date) {
+                    const d = new Date(date);
+                    const day = d.getDay();
+                    const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+                    d.setDate(diff);
+                    d.setHours(0, 0, 0, 0);
+                    return d;
+                }
+                
+                // 1. Loop through each shift to qualify hours
+                for (const dateString in schedule) {
+                    const shiftType = schedule[dateString];
+                    const startTime = (shiftType === 'N') ? 18 : ((shiftType === 'J' || shiftType === '24h') ? 6 : 0);
+                    const shiftStartDate = new Date(dateString);
+                    shiftStartDate.setHours(startTime, 0, 0, 0);
+
+                    for (let h = 0; h < shiftDuration; h++) {
+                        const hour = new Date(shiftStartDate.getTime() + h * 3600000);
+                        totalHours++;
+                        
+                        // Track hours per week for overtime calculation
+                        const weekStart = getWeekStart(hour);
+                        const weekKey = weekStart.toISOString().split('T')[0];
+                        const monthKeyForWeek = hour.toISOString().substring(0, 7);
+                        if (!weeklyHours[weekKey]) weeklyHours[weekKey] = { hours: 0, byMonth: {} };
+                        weeklyHours[weekKey].hours++;
+                        if(!weeklyHours[weekKey].byMonth[monthKeyForWeek]) weeklyHours[weekKey].byMonth[monthKeyForWeek] = 0;
+                        weeklyHours[weekKey].byMonth[monthKeyForWeek]++;
+
+                        // Qualify hour and add to monthly totals
+                        const monthKey = `${hour.getFullYear()}-${String(hour.getMonth() + 1).padStart(2, '0')}`;
+                        if (!monthlyTotals[monthKey]) {
+                           monthlyTotals[monthKey] = { nightHours: 0, sundayHours: 0, holidayHours: 0, totalHours: 0, overtime40: 0, overtime25: 0, overtime50: 0 };
+                        }
+                        monthlyTotals[monthKey].totalHours++;
+                        
+                        // Use local date for holiday check to avoid timezone issues
+                        const y = hour.getFullYear();
+                        const m = String(hour.getMonth() + 1).padStart(2, '0');
+                        const d = String(hour.getDate()).padStart(2, '0');
+                        const currentHourDateString = `${y}-${m}-${d}`;
+
+                        const isCurrentHourHoliday = PUBLIC_HOLIDAYS_2025.has(currentHourDateString) || PUBLIC_HOLIDAYS_2026.has(currentHourDateString);
+
+                        if (isCurrentHourHoliday) {
+                            monthlyTotals[monthKey].holidayHours++;
+                        } else if (hour.getDay() === 0) { // Sunday
+                            monthlyTotals[monthKey].sundayHours++;
+                        } else if (hour.getHours() >= 22 || hour.getHours() < 6) { // Night
+                            monthlyTotals[monthKey].nightHours++;
+                        }
+                    }
+                }
+                
+                // 2. Calculate and distribute weekly overtimes
+                for (const weekKey in weeklyHours) {
+                    const hours = weeklyHours[weekKey].hours;
+                    if (hours > 39) {
+                        let targetMonth = Object.keys(weeklyHours[weekKey].byMonth).reduce((a, b) => weeklyHours[weekKey].byMonth[a] > weeklyHours[weekKey].byMonth[b] ? a : b);
+
+                        if (monthlyTotals[targetMonth]) {
+                            if (hours > 39) {
+                                monthlyTotals[targetMonth].overtime40 += Math.min(hours - 39, 3);
+                            }
+                            if (hours > 42) {
+                                monthlyTotals[targetMonth].overtime25 += Math.min(hours - 42, 8);
+                            }
+                            if (hours > 50) {
+                                monthlyTotals[targetMonth].overtime50 += hours - 50;
+                            }
+                        }
+                    }
+                }
+                
+                // 3. Aggregate monthly totals into annual totals
+                const annualTotals = Object.values(monthlyTotals).reduce((acc, month) => {
+                    acc.nightHours += month.nightHours;
+                    acc.sundayHours += month.sundayHours;
+                    acc.holidayHours += month.holidayHours;
+                    acc.overtime40 += month.overtime40;
+                    acc.overtime25 += month.overtime25;
+                    acc.overtime50 += month.overtime50;
+                    return acc;
+                }, { nightHours: 0, sundayHours: 0, holidayHours: 0, overtime40: 0, overtime25: 0, overtime50: 0 });
+                
+                annualTotals.totalHours = totalHours;
+                return { annualTotals, monthlyTotals };
+            }
+
+            function calculateTransportCosts(vacations) {
+                const distance = parseFloat(document.getElementById('distance').value) || 0;
+                const consumption = parseFloat(document.getElementById('consumption').value) || 0;
+                const fuelPrice = parseFloat(document.getElementById('fuel-price').value) || 0;
+                const maintenance = parseFloat(document.getElementById('maintenance').value) || 0;
+                const toll = parseFloat(document.getElementById('toll').value) || 0;
+                const totalKm = vacations * distance * 2;
+                const fuelCost = (totalKm / 100) * consumption * fuelPrice;
+                const maintenanceCost = totalKm * maintenance;
+                const tollCost = vacations * toll * 2;
+                return { totalCost: fuelCost + maintenanceCost + tollCost, totalKm, fuelCost, maintenanceCost, tollCost };
+            }
+
+            function runSimulation() {
+                const baseTreatment = parseFloat(baseTreatmentInput.value) || 0;
+                const majorationRate = parseFloat(majorationRateInput.value) || 0;
+                if (baseTreatment === 0) return;
+                
+                const hourlyRate = baseTreatment / 151.67;
+
+                // --- MODIFIED LOGIC ---
+                // Calculate bonus based on actual worked hours, no ratio.
+                const { annualTotals: totals12h, monthlyTotals: monthly12h } = calculateAllMajorations(schedule12h, 12);
+                const bonus12h = (totals12h.nightHours * majorationRate) 
+                                + (totals12h.sundayHours * majorationRate * 0.75) 
+                                + (totals12h.holidayHours * majorationRate) 
+                                + (totals12h.overtime40 * hourlyRate * 0.25)
+                                + (totals12h.overtime25 * hourlyRate * 0.25) 
+                                + (totals12h.overtime50 * hourlyRate * 0.50);
+                const totalPay12h = (baseTreatment * 12) + bonus12h;
+
+                const { annualTotals: totals24h, monthlyTotals: monthly24h } = calculateAllMajorations(schedule24h, 24);
+                const bonus24h = (totals24h.nightHours * majorationRate) 
+                                + (totals24h.sundayHours * majorationRate * 0.75) 
+                                + (totals24h.holidayHours * majorationRate) 
+                                + (totals24h.overtime40 * hourlyRate * 0.25)
+                                + (totals24h.overtime25 * hourlyRate * 0.25) 
+                                + (totals24h.overtime50 * hourlyRate * 0.50);
+                const totalPay24h = (baseTreatment * 12) + bonus24h;
+                
+                document.getElementById('result-12h').textContent = `${(totalPay12h / 12).toFixed(2)} €`;
+                document.getElementById('result-24h').textContent = `${(totalPay24h / 12).toFixed(2)} €`;
+                const remunerationGain = totalPay24h - totalPay12h;
+                document.getElementById('gain-annuel').textContent = `${remunerationGain.toFixed(2)} €`;
+                
+                // Display actual annual totals, no scaling.
+                document.getElementById('details-12h-night-hours').textContent = totals12h.nightHours.toFixed(0);
+                document.getElementById('details-12h-night-pay').textContent = (totals12h.nightHours * majorationRate).toFixed(2);
+                document.getElementById('details-12h-sunday-hours').textContent = totals12h.sundayHours.toFixed(0);
+                document.getElementById('details-12h-sunday-pay').textContent = (totals12h.sundayHours * majorationRate * 0.75).toFixed(2);
+                document.getElementById('details-12h-holiday-hours').textContent = totals12h.holidayHours.toFixed(0);
+                document.getElementById('details-12h-holiday-pay').textContent = (totals12h.holidayHours * majorationRate).toFixed(2);
+                document.getElementById('details-12h-overtime40-hours').textContent = totals12h.overtime40.toFixed(0);
+                document.getElementById('details-12h-overtime40-pay').textContent = (totals12h.overtime40 * hourlyRate * 0.25).toFixed(2);
+                document.getElementById('details-12h-overtime25-hours').textContent = totals12h.overtime25.toFixed(0);
+                document.getElementById('details-12h-overtime25-pay').textContent = (totals12h.overtime25 * hourlyRate * 0.25).toFixed(2);
+                document.getElementById('details-12h-overtime50-hours').textContent = totals12h.overtime50.toFixed(0);
+                document.getElementById('details-12h-overtime50-pay').textContent = (totals12h.overtime50 * hourlyRate * 0.50).toFixed(2);
+
+                document.getElementById('details-24h-night-hours').textContent = totals24h.nightHours.toFixed(0);
+                document.getElementById('details-24h-night-pay').textContent = (totals24h.nightHours * majorationRate).toFixed(2);
+                document.getElementById('details-24h-sunday-hours').textContent = totals24h.sundayHours.toFixed(0);
+                document.getElementById('details-24h-sunday-pay').textContent = (totals24h.sundayHours * majorationRate * 0.75).toFixed(2);
+                document.getElementById('details-24h-holiday-hours').textContent = totals24h.holidayHours.toFixed(0);
+                document.getElementById('details-24h-holiday-pay').textContent = (totals24h.holidayHours * majorationRate).toFixed(2);
+                document.getElementById('details-24h-overtime40-hours').textContent = totals24h.overtime40.toFixed(0);
+                document.getElementById('details-24h-overtime40-pay').textContent = (totals24h.overtime40 * hourlyRate * 0.25).toFixed(2);
+                document.getElementById('details-24h-overtime25-hours').textContent = totals24h.overtime25.toFixed(0);
+                document.getElementById('details-24h-overtime25-pay').textContent = (totals24h.overtime25 * hourlyRate * 0.25).toFixed(2);
+                document.getElementById('details-24h-overtime50-hours').textContent = totals24h.overtime50.toFixed(0);
+                document.getElementById('details-24h-overtime50-pay').textContent = (totals24h.overtime50 * hourlyRate * 0.50).toFixed(2);
+
+                const currentTotalHours = editMode === '12h' ? totals12h.totalHours : totals24h.totalHours;
+                document.getElementById('total-hours-display').textContent = currentTotalHours.toFixed(0);
+                const progressBar = document.getElementById('hours-progress-bar');
+                const progressPercentage = Math.min((currentTotalHours / 1501) * 100, 100);
+                progressBar.style.width = `${progressPercentage}%`;
+                progressBar.classList.toggle('over', currentTotalHours > 1501);
+
+                document.getElementById('card-12h').classList.remove('winner');
+                document.getElementById('card-24h').classList.remove('winner');
+                if (totalPay24h > totalPay12h) document.getElementById('card-24h').classList.add('winner');
+                else if (totalPay12h > totalPay24h) document.getElementById('card-12h').classList.add('winner');
+                
+                const vacations12h = Object.keys(schedule12h).length;
+                const vacations24h = Object.keys(schedule24h).length;
+                const transport12h = calculateTransportCosts(vacations12h);
+                const transport24h = calculateTransportCosts(vacations24h);
+                const transportSavings = transport12h.totalCost - transport24h.totalCost;
+
+                document.getElementById('cost-12h').textContent = `${transport12h.totalCost.toFixed(0)} €`;
+                document.getElementById('cost-24h').textContent = `${transport24h.totalCost.toFixed(0)} €`;
+                document.getElementById('savings-transport').textContent = `${transportSavings.toFixed(0)} €`;
+                document.getElementById('tooltip-12h').innerHTML = `<b>Détail Planning 12h (${vacations12h} trajets) :</b><br>- Carburant : ${transport12h.fuelCost.toFixed(0)} €<br>- Entretien/Usure : ${transport12h.maintenanceCost.toFixed(0)} €<br>- Péage : ${transport12h.tollCost.toFixed(0)} €<br>- Km annuel : ${transport12h.totalKm.toFixed(0)} km`;
+                document.getElementById('tooltip-24h').innerHTML = `<b>Détail Planning 24h (${vacations24h} trajets) :</b><br>- Carburant : ${transport24h.fuelCost.toFixed(0)} €<br>- Entretien/Usure : ${transport24h.maintenanceCost.toFixed(0)} €<br>- Péage : ${transport24h.tollCost.toFixed(0)} €<br>- Km annuel : ${transport24h.totalKm.toFixed(0)} km`;
+
+                const totalSavings = remunerationGain + transportSavings;
+                document.getElementById('total-savings').textContent = `${totalSavings.toFixed(2)} €`;
+
+                updateMonthlyTooltips(
+                    editMode === '12h' ? monthly12h : monthly24h,
+                    majorationRate,
+                    hourlyRate
+                );
+            }
+            
+            const calendarContainer = document.getElementById('annual-calendar-container');
+            const monthNames = ["Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre", "Janvier", "Février", "Mars"];
+
+            function updateMonthlyTooltips(monthlyTotals, majorationRate, hourlyRate) {
+                for (let i = 0; i < 12; i++) {
+                    const month = (i + 3) % 12;
+                    const year = i < 9 ? 2025 : 2026;
+                    const monthKey = `${year}-${String(month + 1).padStart(2, '0')}`;
+                    
+                    const tooltipElement = document.getElementById(`tooltip-month-${monthKey}`);
+                    if (!tooltipElement) continue;
+
+                    const monthData = monthlyTotals[monthKey] || { nightHours: 0, sundayHours: 0, holidayHours: 0, overtime40: 0, overtime25: 0, overtime50: 0, totalHours: 0 };
+                    
+                    const pay = {
+                        night: monthData.nightHours * majorationRate,
+                        sunday: monthData.sundayHours * majorationRate * 0.75,
+                        holiday: monthData.holidayHours * majorationRate,
+                        overtime40: monthData.overtime40 * hourlyRate * 0.25,
+                        overtime25: monthData.overtime25 * hourlyRate * 0.25,
+                        overtime50: monthData.overtime50 * hourlyRate * 0.50,
+                    };
+                    const totalPay = pay.night + pay.sunday + pay.holiday + pay.overtime40 + pay.overtime25 + pay.overtime50;
+
+                    tooltipElement.innerHTML = `
+                        <div style="font-weight: 700; font-size: 0.9rem; color: white; margin-bottom: 0.5rem;">💰 Bonus estimé: +${totalPay.toFixed(2)}€</div>
+                        <div style="font-size: 0.75rem; color: #d1d5db;">
+                            <p style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;"><span>⏱️ H. trav:</span> <span style="font-weight: 500; color: white;">${monthData.totalHours.toFixed(0)}h</span></p>
+                            <p style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;"><span>🌙 Nuit:</span> <span style="font-weight: 500; color: white;">${monthData.nightHours.toFixed(0)}h (+${pay.night.toFixed(2)}€)</span></p>
+                            <p style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;"><span>🗓️ Dimanche:</span> <span style="font-weight: 500; color: white;">${monthData.sundayHours.toFixed(0)}h (+${pay.sunday.toFixed(2)}€)</span></p>
+                            <p style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;"><span>🎉 Férié:</span> <span style="font-weight: 500; color: white;">${monthData.holidayHours.toFixed(0)}h (+${pay.holiday.toFixed(2)}€)</span></p>
+                            <p style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;"><span>✨ H. maj:+25%:</span> <span style="font-weight: 500; color: white;">${monthData.overtime40.toFixed(0)}h (+${pay.overtime40.toFixed(2)}€)</span></p>
+                            <p style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;"><span>⏰ Sup.+25%:</span> <span style="font-weight: 500; color: white;">${monthData.overtime25.toFixed(0)}h (+${pay.overtime25.toFixed(2)}€)</span></p>
+                            <p style="display: flex; justify-content: space-between;"><span>⚡ Sup.+50%:</span> <span style="font-weight: 500; color: white;">${monthData.overtime50.toFixed(0)}h (+${pay.overtime50.toFixed(2)}€)</span></p>
+                        </div>
+                    `;
+                }
+            }
+            
+            function displayAnnualCalendar() {
+                const schedule = editMode === '12h' ? schedule12h : schedule24h;
+                calendarContainer.innerHTML = '';
+                for (let i = 0; i < 12; i++) {
+                    const month = (i + 3) % 12;
+                    const year = i < 9 ? 2025 : 2026;
+                    const monthKey = `${year}-${String(month + 1).padStart(2, '0')}`;
+                    const monthDiv = document.createElement('div');
+                    let monthHtml = `
+                        <h4 class="month-header">
+                            📅 ${monthNames[i]} ${year}
+                            <div class="tooltip" style="display: inline-block; margin-left: 0.5rem;">
+                                <span style="color: #9ca3af; cursor: help;">ℹ️</span>
+                                <span id="tooltip-month-${monthKey}" class="tooltiptext">Calcul en cours...</span>
+                            </div>
+                        </h4>
+                    `;
+                    monthHtml += `<div class="calendar-month-grid">`;
+                    ['L', 'M', 'M', 'J', 'V', 'S', 'D'].forEach(day => monthHtml += `<div class="calendar-day-header">${day}</div>`);
+                    const daysInMonth = new Date(year, month + 1, 0).getDate();
+                    const firstDayOfMonth = new Date(year, month, 1).getDay();
+                    const adjustedFirstDay = (firstDayOfMonth === 0) ? 6 : firstDayOfMonth - 1;
+                    for (let d = 0; d < adjustedFirstDay; d++) monthHtml += `<div></div>`;
+                    for (let day = 1; day <= daysInMonth; day++) {
+                        const dateString = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                        const shiftType = schedule[dateString] || 'Repos';
+                        let dayClass = 'day-repos', content = day;
+                        if (shiftType === 'J') { dayClass = 'day-j'; content = 'J'; }
+                        else if (shiftType === 'N') { dayClass = 'day-n'; content = 'N'; }
+                        else if (shiftType === '24h') { dayClass = 'day-24h'; }
+                        monthHtml += `<button class="calendar-day ${dayClass}" data-date="${dateString}">${content}</button>`;
+                    }
+                    monthHtml += `</div>`;
+                    monthDiv.innerHTML = monthHtml;
+                    calendarContainer.appendChild(monthDiv);
+                }
+            }
+
+            baseTreatmentInput.addEventListener('input', runSimulation);
+            majorationRateInput.addEventListener('input', runSimulation);
+            transportInputs.forEach(input => input.addEventListener('input', runSimulation));
+            
+            const btnEdit12h = document.getElementById('btn-edit-12h');
+            const btnEdit24h = document.getElementById('btn-edit-24h');
+            
+            btnEdit12h.addEventListener('click', () => {
+                editMode = '12h';
+                btnEdit12h.classList.add('active');
+                btnEdit24h.classList.remove('active');
+                displayAnnualCalendar();
+                runSimulation();
+            });
+            btnEdit24h.addEventListener('click', () => {
+                editMode = '24h';
+                btnEdit24h.classList.add('active');
+                btnEdit12h.classList.remove('active');
+                displayAnnualCalendar();
+                runSimulation();
+            });
+            
+            calendarContainer.addEventListener('click', (e) => {
+                if (e.target.matches('.calendar-day')) {
+                    const date = e.target.dataset.date;
+                    if (editMode === '12h') {
+                        const current = schedule12h[date];
+                        if (!current) schedule12h[date] = 'J';
+                        else if (current === 'J') schedule12h[date] = 'N';
+                        else if (current === 'N') delete schedule12h[date];
+                    } else {
+                        if (!schedule24h[date]) schedule24h[date] = '24h';
+                        else delete schedule24h[date];
+                    }
+                    displayAnnualCalendar();
+                    runSimulation();
+                }
+            });
+
+            btnEdit12h.classList.add('active');
+            displayAnnualCalendar();
+            runSimulation();
+        });
+    </script>
+</body>
+</html>
