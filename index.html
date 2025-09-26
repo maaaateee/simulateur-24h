@@ -1352,8 +1352,8 @@
 
             <!-- Total des économies -->
             <div class="total-savings">
-                <h2 class="total-title">🎯 Gain Annuel Total Estimé (Salaire)</h2>
-                <p class="total-subtitle">Ce montant représente uniquement le gain financier brut annuel</p>
+                <h2 class="total-title">🎯 Économie Totale Annuelle Estimée</h2>
+                <p class="total-subtitle">(Gain de salaire + Économie de transport)</p>
                 <p id="total-savings" class="total-amount">0,00 €</p>
             </div>
         </section>
@@ -1846,7 +1846,7 @@
                 document.getElementById('tooltip-12h').innerHTML = `<b>Détail Planning 12h (${vacations12h} trajets) :</b><br>- Temps de transport : ${totalTimeHours12h}h/an<br>- Coût carburant : ${transport12h.fuelCost.toFixed(0)} €<br>- Coût entretien/usure : ${transport12h.maintenanceCost.toFixed(0)} €<br>- Coût péage : ${transport12h.tollCost.toFixed(0)} €`;
                 document.getElementById('tooltip-24h').innerHTML = `<b>Détail Planning 24h (${vacations24h} trajets) :</b><br>- Temps de transport : ${totalTimeHours24h}h/an<br>- Coût carburant : ${transport24h.fuelCost.toFixed(0)} €<br>- Coût entretien/usure : ${transport24h.maintenanceCost.toFixed(0)} €<br>- Coût péage : ${transport24h.tollCost.toFixed(0)} €`;
 
-                const totalSavings = remunerationGain; // Only financial gain
+                const totalSavings = remunerationGain + transportSavings;
                 document.getElementById('total-savings').textContent = `${totalSavings.toFixed(2)} €`;
 
                 updateMonthlyTooltips(
@@ -1980,4 +1980,4 @@
         });
     </script>
 </body>
-</html> 
+</html>
