@@ -218,7 +218,6 @@
             padding: 1.5rem;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             position: relative;
-            overflow: hidden;
         }
 
         .planning-card::before {
@@ -650,6 +649,37 @@
             font-weight: 700;
             color: #15803d;
         }
+        
+        .savings-subtitle {
+             font-size: 1rem;
+             color: #166534;
+             margin-top: 0.25rem;
+        }
+        
+        /* New styles for time savings card */
+        .savings-highlight-time {
+            background: linear-gradient(135deg, #e0f2fe, #bae6fd);
+            border: 2px solid #38bdf8;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .savings-highlight-time .savings-title {
+            color: #0369a1;
+        }
+
+        .savings-highlight-time .savings-amount {
+            color: #0369a1;
+        }
+
+        .savings-highlight-time .savings-subtitle {
+            color: #075985;
+            font-size: 1rem;
+            margin-top: 0.25rem;
+        }
+
 
         /* Total Savings */
         .total-savings {
@@ -688,6 +718,27 @@
                 opacity: 0.8;
                 transform: scale(1.05);
             }
+        }
+        
+        /* New animation for the 24h button */
+        @keyframes pulse-green {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+            }
+            70% {
+                transform: scale(1.02);
+                box-shadow: 0 0 0 8px rgba(34, 197, 94, 0);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+            }
+        }
+
+        .pulse-animation {
+            animation: pulse-green 2.5s infinite;
+            border-radius: 0.375rem; /* Ensure rounded corners for the shadow */
         }
 
         /* Comparateur Visuel Styles */
@@ -1049,7 +1100,7 @@
         <section id="simulateur" class="section">
             <div class="section-header">
                 <h1 class="section-title">💸 Simulateur Financier et Transport</h1>
-                <p class="section-subtitle">Découvrez l'impact financier du passage au rythme 24h</p>
+                <p class="section-subtitle">Découvrez l'impact financier et qualitatif du passage au rythme 24h</p>
             </div>
 
             <div class="grid-2">
@@ -1078,7 +1129,13 @@
                         <div id="card-12h" class="planning-card planning-card-12h">
                             <h4 class="planning-title planning-title-12h">📅 Planning Actuel 12h</h4>
                             <p class="planning-subtitle">🔄 Calculé d'après votre planning ci-dessus</p>
-                            <p class="planning-subtitle">Salaire Brut Mensuel Estimé</p>
+                            <p class="planning-subtitle">
+                                Salaire Brut Mensuel Estimé
+                                <div class="tooltip" style="display: inline-block; margin-left: 0.5rem;">
+                                    <span style="color: #9ca3af; cursor: help;">ℹ️</span>
+                                    <span class="tooltiptext" style="width: 15rem; margin-left: -7.5rem;">Ce montant est une estimation du brut mensuel incluant le traitement de base et les majorations (nuit, dimanche, férié, HS). Il n'inclut pas les primes (assiduité, SUFA/COFA, ancienneté, 13ème mois) ni le paiement des IDT.</span>
+                                </div>
+                            </p>
                             <p id="result-12h" class="salary-amount salary-amount-12h">0,00 €</p>
                             <div class="majorations-details">
                                 <h5 class="majorations-title">Détail majorations (total/an)</h5>
@@ -1112,7 +1169,13 @@
                         <div id="card-24h" class="planning-card planning-card-24h">
                             <h4 class="planning-title planning-title-24h">✨ Proposition Planning 24h</h4>
                             <p class="planning-subtitle">🔄 Calculé d'après votre planning ci-dessus</p>
-                            <p class="planning-subtitle">Salaire Brut Mensuel Estimé</p>
+                            <p class="planning-subtitle">
+                                Salaire Brut Mensuel Estimé
+                                <div class="tooltip" style="display: inline-block; margin-left: 0.5rem;">
+                                    <span style="color: #9ca3af; cursor: help;">ℹ️</span>
+                                    <span class="tooltiptext" style="width: 15rem; margin-left: -7.5rem;">Ce montant est une estimation du brut mensuel incluant le traitement de base et les majorations (nuit, dimanche, férié, HS). Il n'inclut pas les primes (assiduité, SUFA/COFA, ancienneté, 13ème mois) ni le paiement des IDT.</span>
+                                </div>
+                            </p>
                             <p id="result-24h" class="salary-amount salary-amount-24h">0,00 €</p>
                             <div class="majorations-details">
                                 <h5 class="majorations-title">Détail majorations (total/an)</h5>
@@ -1145,7 +1208,7 @@
                     </div>
 
                     <div class="text-center" style="text-align: center; margin-top: 1.5rem;">
-                        <p style="font-size: 1.3rem; font-weight: 700;">💰 Gain Annuel Brut Estimé : <span id="gain-annuel" style="color: #3b82f6;">0,00 €</span></p>
+                        <p style="font-size: 1.3rem; font-weight: 700;">💰 Gain Financier Annuel Brut : <span id="gain-annuel" style="color: #3b82f6;">0,00 €</span></p>
                     </div>
                 </div>
 
@@ -1167,7 +1230,7 @@
                     <div class="calendar-controls">
                         <div class="control-group">
                             <button id="btn-edit-12h" class="control-btn active">🔴 Modifier Planning 12h</button>
-                            <button id="btn-edit-24h" class="control-btn">🟢 Modifier Planning 24h</button>
+                            <button id="btn-edit-24h" class="control-btn pulse-animation">🟢 Modifier Planning 24h</button>
                         </div>
                     </div>
                     
@@ -1198,7 +1261,7 @@
             <div class="transport-section">
                 <h2 class="transport-title">
                     <span>🚗</span>
-                    <span>Coûts de Transport Annuels</span>
+                    <span>Analyse Annuelle des Transports</span>
                 </h2>
                 
                 <div class="transport-grid">
@@ -1206,21 +1269,20 @@
                         <div class="form-group">
                             <label for="distance" class="form-label">
                                 🛣️ Distance (km aller)
-                                <div class="tooltip" style="display: inline-block; margin-left: 0.5rem;">
-                                    <span style="color: #9ca3af; cursor: help;">ℹ️</span>
-                                    <span class="tooltiptext">Basé sur la distance moyenne des trajets domicile-travail en Ile-de-France</span>
-                                </div>
                             </label>
                             <input type="number" id="distance" value="40" class="form-input transport-input">
                         </div>
                         
                         <div class="form-group">
+                            <label for="time-trajet" class="form-label">
+                                ⏱️ Temps de trajet (minutes aller)
+                            </label>
+                            <input type="number" id="time-trajet" value="60" class="form-input transport-input">
+                        </div>
+
+                        <div class="form-group">
                             <label for="consumption" class="form-label">
                                 ⛽ Consommation (L/100km)
-                                <div class="tooltip" style="display: inline-block; margin-left: 0.5rem;">
-                                    <span style="color: #9ca3af; cursor: help;">ℹ️</span>
-                                    <span class="tooltiptext">Basé sur la consommation moyenne d'un véhicule de type berline compacte</span>
-                                </div>
                             </label>
                             <input type="number" id="consumption" value="6.5" step="0.1" class="form-input transport-input">
                         </div>
@@ -1228,10 +1290,6 @@
                         <div class="form-group">
                             <label for="fuel-price" class="form-label">
                                 💰 Prix Carburant (€/L)
-                                <div class="tooltip" style="display: inline-block; margin-left: 0.5rem;">
-                                    <span style="color: #9ca3af; cursor: help;">ℹ️</span>
-                                    <span class="tooltiptext">Basé sur le prix moyen constaté</span>
-                                </div>
                             </label>
                             <input type="number" id="fuel-price" value="1.70" step="0.01" class="form-input transport-input">
                         </div>
@@ -1239,10 +1297,6 @@
                         <div class="form-group">
                             <label for="maintenance" class="form-label">
                                 🔧 Entretien + Usure (€/km)
-                                <div class="tooltip" style="display: inline-block; margin-left: 0.5rem;">
-                                    <span style="color: #9ca3af; cursor: help;">ℹ️</span>
-                                    <span class="tooltiptext">Estimation moyenne nationale (entretien + usure + dépréciation du véhicule)</span>
-                                </div>
                             </label>
                             <input type="number" id="maintenance" value="0.25" step="0.01" class="form-input transport-input">
                         </div>
@@ -1250,10 +1304,6 @@
                         <div class="form-group">
                             <label for="toll" class="form-label">
                                 🛣️ Péage (€ aller)
-                                <div class="tooltip" style="display: inline-block; margin-left: 0.5rem;">
-                                    <span style="color: #9ca3af; cursor: help;">ℹ️</span>
-                                    <span class="tooltiptext">Modifiez cette valeur si vous utilisez des autoroutes à péage</span>
-                                </div>
                             </label>
                             <input type="number" id="toll" value="0" step="0.1" class="form-input transport-input">
                         </div>
@@ -1263,7 +1313,7 @@
                         <div class="cost-comparison">
                             <div class="cost-item">
                                 <div class="cost-label cost-label-12h">
-                                    <span>🔴 Coût Planning 12h</span>
+                                    <span>🔴 Coût & Temps Planning 12h</span>
                                     <div class="tooltip" style="display: inline-block; margin-left: 0.5rem;">
                                         <span style="color: #9ca3af; cursor: help;">ℹ️</span>
                                         <span id="tooltip-12h" class="tooltiptext">Détail du calcul...</span>
@@ -1274,7 +1324,7 @@
                             
                             <div class="cost-item">
                                 <div class="cost-label cost-label-24h">
-                                    <span>🟢 Coût Planning 24h</span>
+                                    <span>🟢 Coût & Temps Planning 24h</span>
                                     <div class="tooltip" style="display: inline-block; margin-left: 0.5rem;">
                                         <span style="color: #9ca3af; cursor: help;">ℹ️</span>
                                         <span id="tooltip-24h" class="tooltiptext">Détail du calcul...</span>
@@ -1285,9 +1335,17 @@
                         </div>
                         
                         <div class="savings-highlight">
-                            <p class="savings-title">💚 Économie Annuelle de Transport</p>
+                            <p class="savings-title">💚 Économie Financière sur le Transport</p>
                             <p id="savings-transport" class="savings-amount">0 €</p>
                         </div>
+
+                        <div class="savings-highlight-time">
+                            <p class="savings-title">🕒 Temps de Transport Économisé</p>
+                            <p id="savings-time-hours" class="savings-amount">0 heures</p>
+                            <p id="savings-time-days" class="savings-subtitle">soit 0 vacations de 12h</p>
+                            <p id="savings-vacations" class="savings-subtitle"></p>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -1674,18 +1732,24 @@
                 return { annualTotals, monthlyTotals };
             }
 
-            function calculateTransportCosts(vacations) {
+            function calculateTransport(vacations) {
                 const distance = parseFloat(document.getElementById('distance').value) || 0;
+                const timeTrajet = parseFloat(document.getElementById('time-trajet').value) || 0;
                 const consumption = parseFloat(document.getElementById('consumption').value) || 0;
                 const fuelPrice = parseFloat(document.getElementById('fuel-price').value) || 0;
                 const maintenance = parseFloat(document.getElementById('maintenance').value) || 0;
                 const toll = parseFloat(document.getElementById('toll').value) || 0;
+                
                 const totalKm = vacations * distance * 2;
                 const fuelCost = (totalKm / 100) * consumption * fuelPrice;
                 const maintenanceCost = totalKm * maintenance;
                 const tollCost = vacations * toll * 2;
-                return { totalCost: fuelCost + maintenanceCost + tollCost, totalKm, fuelCost, maintenanceCost, tollCost };
+                const totalCost = fuelCost + maintenanceCost + tollCost;
+                const totalTime = vacations * timeTrajet * 2; // in minutes
+                
+                return { totalCost, totalKm, fuelCost, maintenanceCost, tollCost, totalTime };
             }
+
 
             function runSimulation() {
                 const baseTreatment = parseFloat(baseTreatmentInput.value) || 0;
@@ -1760,15 +1824,27 @@
                 
                 const vacations12h = Object.keys(schedule12h).length;
                 const vacations24h = Object.keys(schedule24h).length;
-                const transport12h = calculateTransportCosts(vacations12h);
-                const transport24h = calculateTransportCosts(vacations24h);
+                const transport12h = calculateTransport(vacations12h);
+                const transport24h = calculateTransport(vacations24h);
+                
                 const transportSavings = transport12h.totalCost - transport24h.totalCost;
+                const timeSavingsMinutes = transport12h.totalTime - transport24h.totalTime;
+                const timeSavingsHours = timeSavingsMinutes / 60;
+                const timeSavingsDays = timeSavingsHours / 12; // Based on 12h shifts
+                const savedVacations = vacations12h - vacations24h;
 
                 document.getElementById('cost-12h').textContent = `${transport12h.totalCost.toFixed(0)} €`;
                 document.getElementById('cost-24h').textContent = `${transport24h.totalCost.toFixed(0)} €`;
                 document.getElementById('savings-transport').textContent = `${transportSavings.toFixed(0)} €`;
-                document.getElementById('tooltip-12h').innerHTML = `<b>Détail Planning 12h (${vacations12h} trajets) :</b><br>- Carburant : ${transport12h.fuelCost.toFixed(0)} €<br>- Entretien/Usure : ${transport12h.maintenanceCost.toFixed(0)} €<br>- Péage : ${transport12h.tollCost.toFixed(0)} €<br>- Km annuel : ${transport12h.totalKm.toFixed(0)} km`;
-                document.getElementById('tooltip-24h').innerHTML = `<b>Détail Planning 24h (${vacations24h} trajets) :</b><br>- Carburant : ${transport24h.fuelCost.toFixed(0)} €<br>- Entretien/Usure : ${transport24h.maintenanceCost.toFixed(0)} €<br>- Péage : ${transport24h.tollCost.toFixed(0)} €<br>- Km annuel : ${transport24h.totalKm.toFixed(0)} km`;
+                
+                document.getElementById('savings-time-hours').textContent = `${timeSavingsHours.toFixed(0)} heures`;
+                document.getElementById('savings-time-days').textContent = `soit ${timeSavingsDays.toFixed(1).replace('.',',')} vacations de 12h`;
+                document.getElementById('savings-vacations').textContent = `(${savedVacations} trajets en moins)`;
+
+                const totalTimeHours12h = (transport12h.totalTime / 60).toFixed(0);
+                const totalTimeHours24h = (transport24h.totalTime / 60).toFixed(0);
+                document.getElementById('tooltip-12h').innerHTML = `<b>Détail Planning 12h (${vacations12h} trajets) :</b><br>- Temps de transport : ${totalTimeHours12h}h/an<br>- Coût carburant : ${transport12h.fuelCost.toFixed(0)} €<br>- Coût entretien/usure : ${transport12h.maintenanceCost.toFixed(0)} €<br>- Coût péage : ${transport12h.tollCost.toFixed(0)} €`;
+                document.getElementById('tooltip-24h').innerHTML = `<b>Détail Planning 24h (${vacations24h} trajets) :</b><br>- Temps de transport : ${totalTimeHours24h}h/an<br>- Coût carburant : ${transport24h.fuelCost.toFixed(0)} €<br>- Coût entretien/usure : ${transport24h.maintenanceCost.toFixed(0)} €<br>- Coût péage : ${transport24h.tollCost.toFixed(0)} €`;
 
                 const totalSavings = remunerationGain + transportSavings;
                 document.getElementById('total-savings').textContent = `${totalSavings.toFixed(2)} €`;
@@ -1868,12 +1944,14 @@
                 editMode = '12h';
                 btnEdit12h.classList.add('active');
                 btnEdit24h.classList.remove('active');
+                btnEdit24h.classList.add('pulse-animation');
                 displayAnnualCalendar();
                 runSimulation();
             });
             btnEdit24h.addEventListener('click', () => {
                 editMode = '24h';
                 btnEdit24h.classList.add('active');
+                btnEdit24h.classList.remove('pulse-animation');
                 btnEdit12h.classList.remove('active');
                 displayAnnualCalendar();
                 runSimulation();
