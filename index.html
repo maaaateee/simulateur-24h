@@ -1267,8 +1267,12 @@
                 <div class="transport-grid">
                     <div class="transport-inputs">
                         <div class="form-group">
-                            <label for="distance" class="form-label">
+                             <label for="distance" class="form-label">
                                 🛣️ Distance (km aller)
+                                <div class="tooltip" style="display: inline-block; margin-left: 0.5rem;">
+                                    <span style="color: #9ca3af; cursor: help;">ℹ️</span>
+                                    <span class="tooltiptext">Basé sur la distance moyenne des trajets domicile-travail en Ile-de-France</span>
+                                </div>
                             </label>
                             <input type="number" id="distance" value="40" class="form-input transport-input">
                         </div>
@@ -1283,13 +1287,21 @@
                         <div class="form-group">
                             <label for="consumption" class="form-label">
                                 ⛽ Consommation (L/100km)
+                                <div class="tooltip" style="display: inline-block; margin-left: 0.5rem;">
+                                    <span style="color: #9ca3af; cursor: help;">ℹ️</span>
+                                    <span class="tooltiptext">Basé sur la consommation moyenne d'un véhicule de type berline compacte</span>
+                                </div>
                             </label>
                             <input type="number" id="consumption" value="6.5" step="0.1" class="form-input transport-input">
                         </div>
                         
                         <div class="form-group">
-                            <label for="fuel-price" class="form-label">
+                             <label for="fuel-price" class="form-label">
                                 💰 Prix Carburant (€/L)
+                                <div class="tooltip" style="display: inline-block; margin-left: 0.5rem;">
+                                    <span style="color: #9ca3af; cursor: help;">ℹ️</span>
+                                    <span class="tooltiptext">Basé sur le prix moyen constaté</span>
+                                </div>
                             </label>
                             <input type="number" id="fuel-price" value="1.70" step="0.01" class="form-input transport-input">
                         </div>
@@ -1297,6 +1309,10 @@
                         <div class="form-group">
                             <label for="maintenance" class="form-label">
                                 🔧 Entretien + Usure (€/km)
+                                <div class="tooltip" style="display: inline-block; margin-left: 0.5rem;">
+                                    <span style="color: #9ca3af; cursor: help;">ℹ️</span>
+                                    <span class="tooltiptext">Estimation moyenne nationale (entretien + usure + dépréciation du véhicule)</span>
+                                </div>
                             </label>
                             <input type="number" id="maintenance" value="0.25" step="0.01" class="form-input transport-input">
                         </div>
@@ -1304,6 +1320,10 @@
                         <div class="form-group">
                             <label for="toll" class="form-label">
                                 🛣️ Péage (€ aller)
+                                <div class="tooltip" style="display: inline-block; margin-left: 0.5rem;">
+                                    <span style="color: #9ca3af; cursor: help;">ℹ️</span>
+                                    <span class="tooltiptext">Modifiez cette valeur si vous utilisez des autoroutes à péage</span>
+                                </div>
                             </label>
                             <input type="number" id="toll" value="0" step="0.1" class="form-input transport-input">
                         </div>
