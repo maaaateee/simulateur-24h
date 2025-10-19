@@ -1535,6 +1535,10 @@
             };
 
             const pattern12hSansConges = (day, index) => {
+                // Modification spécifique pour corriger l'affichage du mois d'exemple
+                if (day === 24) return false; // Le jour 24 est maintenant un repos
+                if (day === 27) return true;  // Le jour 27 est maintenant travaillé
+
                 const cycle = [true, true, false, false, true, true, true, false, false, false, false];
                 return cycle[(index + 1) % cycle.length];
             };
