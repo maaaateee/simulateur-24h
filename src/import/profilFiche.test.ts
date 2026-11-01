@@ -44,9 +44,9 @@ describe('profil lu sur la fiche de paie', () => {
       autresFixes: 150, // supplément familial + IDT (l'assiduité est recalculée)
       tauxPas: 4,
     })
-    // Taux lus (10,00 / 13,50) plus bas que ceux du traitement actuel (2 347,68 ÷ 169 = 13,89) : on garde les plus récents.
-    expect(p.t100).toBe(13.89)
-    expect(p.t75).toBe(10.418)
+    // Les taux de la fiche font foi, même s'ils diffèrent du traitement ÷ 169.
+    expect(p.t100).toBe(13.5)
+    expect(p.t75).toBe(10)
     expect(p.tauxCotisations).toBeCloseTo(750 / 3500, 6)
   })
 

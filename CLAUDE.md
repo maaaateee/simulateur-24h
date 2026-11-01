@@ -1,4 +1,4 @@
-# Simulateur 24h SSIAP — contexte pour Claude
+# Simulateur 24h SSIAP : contexte pour Claude
 
 Réponds en français, en tutoyant l'utilisateur (agent SSIAP 1 d'ADP, porteur du Projet 24h) ; il n'est pas développeur : explique simplement, propose, puis fais.
 
@@ -18,3 +18,13 @@ Réponds en français, en tutoyant l'utilisateur (agent SSIAP 1 d'ADP, porteur d
 - IDT, indemnités kilométriques : éléments fixes, comme dans Planning (même montant en 12 h et en 24 h).
 - Sondage : « 92 % » est le chiffre à utiliser (minimum, les nouvelles recrues sont favorables).
 - Microsoft Clarity retiré (il aurait pu enregistrer les montants affichés).
+
+## Retours de l'utilisateur (01/11/2026, soir)
+
+- Design : thème **sombre par défaut**, bouton clair/sombre (`src/ui/Theme.tsx`, `simulateur-24h:theme`) ; pas de tiret cadratin ni demi-cadratin
+  dans les textes. Couleurs des séries validées (daltonisme) : 12 h orange `#e8650f`, 24 h vert d'eau `#119e8f`, en clair comme en sombre.
+- Trajet par défaut : 35 km, 50 min, 6 L/100, 2,30 €/L, 0,20 €/km (les anciennes valeurs enregistrées sont remplacées si non modifiées).
+- Pose des repos optimisée comme le font les agents (voir README) : fériés et dimanches gardés, un peu plus en 24 h (semaines à 48 h gardées,
+  profil mensuel 4-5 puis 5-6 vacations), congé d'été 24 h réduit à 3 vacations (au moins 12 jours de repos d'affilée).
+- Fiche SSLIA en 24 h : mêmes lignes MAJ.75% et COMP. 25 % que les SSIAP, vacation comptée 24 h, plus un forfait d'heures complémentaires.
+  Les taux sont propres à chaque agent : on lit ceux de la fiche (traitement ÷ 169 seulement à défaut).

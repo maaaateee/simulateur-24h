@@ -28,7 +28,9 @@ export interface CoutTrajets {
   co2: number
 }
 
-export const TRAJET_PAR_DEFAUT: Trajet = { distance: 40, minutes: 50, conso: 6.5, prix: 1.75, entretien: 0.15, peage: 0 }
+export const TRAJET_PAR_DEFAUT: Trajet = { distance: 35, minutes: 50, conso: 6, prix: 2.3, entretien: 0.2, peage: 0 }
+/** Valeurs de la première version (01/11/2026), remplacées si l'agent ne les avait pas changées. */
+export const TRAJET_V2: Trajet = { distance: 40, minutes: 50, conso: 6.5, prix: 1.75, entretien: 0.15, peage: 0 }
 
 export function coutTrajets(allersRetours: number, t: Trajet): CoutTrajets {
   const km = allersRetours * t.distance * 2

@@ -14,7 +14,7 @@ describe('simulation complète', () => {
     expect(s.parEquipe).toHaveLength(4)
     expect(s.gainBrut).toBeCloseTo(s.c24.variable - s.c12.variable, 6)
     expect(s.gainBrut).toBeGreaterThan(0)
-    expect(s.economieTrajets).toBeCloseTo(63 * 80 * (0.065 * 1.75 + 0.15), 0)
+    expect(s.economieTrajets).toBeCloseTo(63 * 70 * (0.06 * 2.3 + 0.2), 0)
     expect(s.gainTotal).toBeCloseTo(s.gainNet + s.economieTrajets, 6)
   })
 

@@ -37,22 +37,31 @@ Le site Netlify est relié à la branche `main` : chaque commit sur `main` est m
 
 ## Règles appliquées
 
-- Majorations (règlement 12.1.I, DG/2005/2199) : nuit 22 h – 6 h +75 %, dimanche +75 % sans cumul avec la nuit, férié +100 % exclusif et
+- Majorations (règlement 12.1.I, DG/2005/2199) : nuit 22 h à 6 h +75 %, dimanche +75 % sans cumul avec la nuit, férié +100 % exclusif et
   prioritaire ; dimanche de Pâques payé comme férié ; chaque heure rattachée à sa date réelle.
-- Taux nominal = traitement de base ÷ 169 h (2 344,28 € → 13,87 € ; 2 333,22 € → 13,81 €) ; taux 75 % arrondi à 3 décimales.
+- Taux de majoration lus sur la fiche ; sans fiche, taux nominal = traitement de base ÷ 169 h (2 344,28 € → 13,87 € ; 2 333,22 € → 13,81 €), taux 75 % arrondi à 3 décimales.
 - Semaines chargées (§ 3.1 et 3.3) : 40e à 42e heure +25 % du taux de base (traitement ÷ 151,67), 43e à 50e +25 %, au-delà +50 %.
 - Indemnité de CP : 1/10e de la rémunération annuelle, majorations comprises.
-- **Hypothèse** : en 24 h, mêmes règles qu'en 12 h. Le règlement renvoie à des accords spécifiques pour le SSLIA et le SMU (H24).
+- En 24 h, mêmes règles qu'en 12 h, comme sur la fiche SSLIA ci-dessous. Le règlement renvoie à des accords spécifiques pour le SSLIA et le SMU (H24).
 
 ## Pose des repos jusqu'à 1 501 h
 
-Même méthode en 12 h et en 24 h, droits à valeur égale en heures :
+Comme le font les agents : les repos sont posés sur les vacations qui rapportent le moins, en gardant au travail les dimanches et les fériés.
+Droits à valeur égale en heures dans les deux plannings :
 
-1. **CP** : 5 semaines (30 jours ouvrables), aux mêmes dates des deux côtés (3 semaines à partir du 2e lundi de juillet environ, semaine de
-   Noël, une semaine mi-février). Toutes les vacations de ces semaines passent en CP.
-2. **RF** : un par férié légal de la période × 12 h (12 vacations de 12 h ou 6 de 24 h en 2026-2027).
+1. **CP** : 5 semaines = 35 jours × la part de jours travaillés (15 vacations de 12 h, 9 de 24 h). Congé principal d'été réduit au minimum
+   pour avoir au moins 12 jours de repos d'affilée : 2 semaines en 12 h, 3 vacations de suite en juillet en 24 h. Le reste vacation par vacation.
+2. **RF** : un par férié légal × 12 h (12 vacations de 12 h ou 6 de 24 h en 2026-2027), chacune après son férié.
 3. **RTT** : 77 h en vacations entières (6 de 12 h ou 3 de 24 h), jamais un férié ; 5 h restent à poser en heures.
-4. **Repos de cycle** : juste ce qu'il faut pour ne pas dépasser 1 501 h (11 à 12 en 24 h, 1 en 12 h).
+4. **Repos de cycle** : ce qu'il faut pour ne pas dépasser 1 501 h.
 
-RF, RTT et repos de cycle sont répartis à intervalles réguliers, sans viser ni éviter dimanches et fériés.
-Résultat 2026-2027 : 12 h → 125 vacations, 1 496 h ; 24 h → 62 vacations, 1 488 h (chaque équipe).
+- 12 h : repos répartis régulièrement dans l'année, sur la vacation la moins rentable à ±10 jours (fériés et dimanches évités, nuits non).
+- 24 h : on évite aussi de casser une semaine à 48 h, et chaque mois suit un profil de vacations travaillées (`PROFIL_24H` :
+  5 5 4 4 5 5 / 5 6 5 6 6 6, d'avril à mars, soit 62 vacations et 1 488 h).
+
+## Ce que montre une fiche de paie SSLIA en 24 h (août 2026)
+
+Une vacation compte 24 h de travail (« 24 00 » dans les informations journalières) ; lignes « MAJ.75% S/HRS A 100 » (nuits et dimanches à +75 %),
+« COMP. 25% S/HRS 100 » (semaines chargées à +25 %) et « FORF.HEURES COMPL. » (forfait d'environ 8,83 h par mois payées à 100 %, propre au SSLIA
+qui travaille au-delà de 1 501 h). Le simulateur applique au 24 h SSIAP les mêmes majorations, sans forfait (les SSIAP restent à 1 501 h).
+Les taux de majoration varient d'un agent à l'autre : ils sont lus sur la fiche ; sans fiche, estimés à traitement de base ÷ 169 h.

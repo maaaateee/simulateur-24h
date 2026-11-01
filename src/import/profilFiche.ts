@@ -43,10 +43,10 @@ export function profilDepuisFiche(f: Payslip, actuel: Profil): Profil {
     echelon,
     traitementBase,
     anciennete: f.ancienneteTaux ?? actuel.anciennete,
-    // Les majorations d'un bulletin sont celles du mois précédent : après un changement d'échelon, leur taux
-    // peut être en retard sur le traitement de base. On garde le plus élevé des deux.
-    t75: Math.max(tauxLu('maj75') ?? 0, derives.t75),
-    t100: Math.max(tauxLu('maj100') ?? 0, derives.t100),
+    // Taux lus sur la fiche : ils sont propres à chaque agent (traitement de base ÷ 169 pour un SSIAP 1 récent,
+    // mais pas pour tout le monde). Sans ligne de majoration, on les estime à partir du traitement.
+    t75: tauxLu('maj75') ?? derives.t75,
+    t100: tauxLu('maj100') ?? (tauxLu('maj75') ? Math.round((tauxLu('maj75')! / 0.75) * 100) / 100 : derives.t100),
     treizieme: (f.elements ?? []).some((e) => /^PRIME 13EME/.test(e.libelle)),
     autresFixes: Math.round(fixes * 100) / 100,
     tauxCotisations: f.brut && f.cotisationsSalariales ? f.cotisationsSalariales / f.brut : actuel.tauxCotisations,

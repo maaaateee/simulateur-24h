@@ -52,8 +52,17 @@ export interface Simulation {
 
 export const AN = AN_TDS_12H
 
-function cote(regime: Regime, theorique: Planning, modifs: Modifs, profil: Profil, trajet: Trajet, reglages: Reglages, fixeTotal: number): Cote {
-  const { planning: auto, bilan } = poserRepos(theorique, regime, AN)
+// La pose des repos ne dépend que du planning et de l'heure de début : on la garde en mémoire.
+const cache = new Map<string, ReturnType<typeof poserRepos>>()
+function pose(regime: Regime, equipe: number, debut24: number) {
+  const cle = `${regime}-${equipe}-${debut24}`
+  if (!cache.has(cle)) cache.set(cle, poserRepos(regime === '12h' ? tds12h() : cycle24h(AN, equipe), regime, AN, debut24))
+  return cache.get(cle)!
+}
+
+function cote(regime: Regime, equipe: number, modifs: Modifs, profil: Profil, trajet: Trajet, reglages: Reglages, fixeTotal: number): Cote {
+  // Le planning 12 h ne dépend pas de l'heure de début du 24 h.
+  const { planning: auto, bilan } = pose(regime, equipe, regime === '12h' ? 7 : reglages.debut24)
   const planning = appliquerModifs(auto, modifs)
   const resultat = calculer(planning, AN, tauxDuProfil(profil), reglages)
   const cp = reglages.indemniteCp ? indemniteCp(resultat.montants.total) : 0
@@ -74,14 +83,14 @@ function cote(regime: Regime, theorique: Planning, modifs: Modifs, profil: Profi
 export function simuler(profil: Profil, trajet: Trajet, reglages: Reglages, modifs12: Modifs, modifs24: Record<number, Modifs>): Simulation {
   const fixe = fixeMensuel(profil)
   const fixeTotal = fixe.reduce((t, l) => t + l.montant, 0)
-  const c12 = cote('12h', tds12h(), modifs12, profil, trajet, reglages, fixeTotal)
+  const c12 = cote('12h', 0, modifs12, profil, trajet, reglages, fixeTotal)
   const total = (c24: Cote) => {
     const gainBrut = c24.variable - c12.variable
     const gainNet = netDepuisBrut(gainBrut, profil)
     const economieTrajets = c12.transport.total - c24.transport.total
     return { gainBrut, gainNet, economieTrajets, gainTotal: gainNet + economieTrajets }
   }
-  const equipes = EQUIPES.map((_, e) => cote('24h', cycle24h(AN, e), modifs24[e] ?? {}, profil, trajet, reglages, fixeTotal))
+  const equipes = EQUIPES.map((_, e) => cote('24h', e, modifs24[e] ?? {}, profil, trajet, reglages, fixeTotal))
   const c24 = equipes[reglages.equipe]
   return { an: AN, fixe, fixeTotal, c12, c24, ...total(c24), parEquipe: equipes.map((c) => total(c).gainTotal) }
 }

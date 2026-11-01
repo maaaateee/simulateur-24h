@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 
 /** État gardé dans le navigateur (localStorage), pour retrouver sa simulation en revenant. */
-export function useStored<T>(key: string, initial: T): [T, (v: T | ((old: T) => T)) => void] {
+export function useStored<T extends object>(key: string, initial: T, migrer: (v: T) => T = (v) => v): [T, (v: T | ((old: T) => T)) => void] {
   const [value, setValue] = useState<T>(() => {
     try {
       const raw = localStorage.getItem(key)
-      return raw ? { ...initial, ...JSON.parse(raw) } : initial
+      return raw ? migrer({ ...initial, ...JSON.parse(raw) }) : initial
     } catch {
       return initial
     }

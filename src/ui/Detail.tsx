@@ -7,7 +7,7 @@ function Lignes({ c, profil }: { c: Cote; profil: Profil }) {
   const m = c.resultat.montants
   const base = profil.traitementBase / 151.67
   const rows: [string, number, string, number][] = [
-    ['🌙 Nuit (22 h – 6 h)', h.nuit, `× ${nombre(profil.t75)} €`, m.nuit],
+    ['🌙 Nuit (22 h à 6 h)', h.nuit, `× ${nombre(profil.t75)} €`, m.nuit],
     ['☀️ Dimanche (hors nuit)', h.dimanche, `× ${nombre(profil.t75)} €`, m.dimanche],
     ['🎉 Jours fériés', h.ferie, `× ${nombre(profil.t100)} €`, m.ferie],
     ['✨ 40e à 42e heure de la semaine', h.comp25, `× 25 % de ${nombre(Math.round(base * 100) / 100)} € (base ÷ 151,67 h)`, m.comp25],
@@ -69,11 +69,15 @@ export function Detail({ sim, profil }: { sim: Simulation; profil: Profil }) {
 
       <div className="deux-colonnes">
         <div>
-          <h3 className="c12">Majorations en 12 h</h3>
+          <h3>
+            <i className="s12" /> Majorations en 12 h
+          </h3>
           <Lignes c={sim.c12} profil={profil} />
         </div>
         <div>
-          <h3 className="c24">Majorations en 24 h</h3>
+          <h3>
+            <i className="s24" /> Majorations en 24 h
+          </h3>
           <Lignes c={sim.c24} profil={profil} />
         </div>
       </div>
@@ -91,13 +95,14 @@ export function Detail({ sim, profil }: { sim: Simulation; profil: Profil }) {
       <ul className="regles">
         <li>Règlement ADP 12.1.I (DG/2005/2199) : nuit de 22 h à 6 h +75 %, dimanche +75 % (sans cumul avec la nuit), jour férié +100 % (prioritaire).</li>
         <li>Chaque heure compte à sa date réelle : une nuit qui commence la veille d'un férié donne 6 h fériées. Le dimanche de Pâques est payé comme un férié chez ADP.</li>
-        <li>Heure à +75 % = 75 % du taux nominal ; taux nominal = traitement de base ÷ 169 h (par exemple 2 344,28 € ÷ 169 = 13,87 €, comme sur les fiches 2026).</li>
+        <li>Taux des heures majorées : ceux de ta fiche de paie (lignes MAJ.75% et MAJ.100% JF). Sans fiche, ils sont estimés à partir du traitement de base ÷ 169 h (2 344,28 € ÷ 169 = 13,87 €, comme sur les fiches SSIAP 1 de 2026).</li>
         <li>Semaines chargées : de la 40e à la 42e heure +25 % (ligne « COMP. 25 % »), de la 43e à la 50e +25 %, au-delà +50 % (§ 3.1 et 3.3 du même règlement).</li>
         <li>Les primes fixes (traitement de base, ancienneté, assiduité, 13e mois, supplément familial, IDT…) ne changent pas avec le rythme de travail.</li>
       </ul>
       <p className="avertissement">
-        ⚠️ <strong>Hypothèse du projet</strong> : en 24 h, on applique les mêmes règles de majoration qu'aujourd'hui en 12 h. Pour le SSLIA et le SMU, déjà en H24, le règlement renvoie à
-        des accords spécifiques : les règles définitives seraient à négocier avec la Direction. Ce simulateur donne une estimation et ne remplace pas ta fiche de paie.
+        🚒 <strong>Ce que montre une fiche de paie de pompier SSLIA en 24 h</strong> (août 2026) : une vacation compte 24 h de travail ; les heures de nuit et de dimanche sont payées
+        +75 % (même ligne MAJ.75% que nous) ; les semaines chargées sont payées +25 % (ligne COMP. 25 %). Le simulateur applique ces mêmes règles au 24 h SSIAP. Les modalités
+        définitives restent à négocier avec la Direction : c'est une estimation, qui ne remplace pas ta fiche de paie.
       </p>
     </div>
   )

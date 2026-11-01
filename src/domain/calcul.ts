@@ -1,6 +1,6 @@
 // Majorations heure par heure, selon le règlement 12.1.I (DG/2005/2199) appliqué aujourd'hui en 12 h :
 //  - jour férié : +100 %, exclusif et prioritaire (le dimanche de Pâques est payé comme férié chez ADP) ;
-//  - nuit (22 h – 6 h) : +75 % ;
+//  - nuit (22 h à 6 h) : +75 % ;
 //  - dimanche : +75 %, sans cumul avec la nuit.
 // Chaque heure est rattachée à sa date réelle (une nuit du 30/04 donne 6 h fériées le 1er mai).
 // Semaines chargées (semaine civile, lundi 0 h → dimanche 24 h) :

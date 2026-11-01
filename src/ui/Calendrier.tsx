@@ -68,7 +68,7 @@ export function Calendrier(props: {
           <strong className={depasse ? 'negatif' : ''}>{heures(props.heuresTotal)}</strong> travaillées sur 1 501 h
           {depasse && <span className="alerte"> · au-dessus du contrat</span>}
         </div>
-        <div className="barre" aria-hidden="true">
+        <div className="barre-compteur" aria-hidden="true">
           <span style={{ width: `${pct}%` }} className={depasse ? 'depasse' : ''} />
         </div>
       </div>
