@@ -9,7 +9,7 @@ salaire (majorations), trajets (coût, temps, CO₂) et repos (week-ends libres,
   l'ancienneté, les taux de majoration, les éléments fixes et les taux de cotisations / d'impôt sont gardés, dans le navigateur.
 - Mesure d'audience anonyme et maison (`netlify/functions/compteur.mjs`, Netlify Blobs) : seulement des noms d'événements
   (visite, nouveau visiteur, téléphone ou ordinateur, fiche importée, partage, passage au planning 12 h), un par clé, sans
-  aucune donnée ni identifiant. Désactivable en bas de page. Statistiques : `/api/stats?cle=…` (variable Netlify `STATS_CLE`).
+  aucune donnée ni identifiant. Statistiques : `/api/stats?cle=…` (variable Netlify `STATS_CLE`).
 - L'ancien simulateur (version d'octobre 2025) reste en ligne en sauvegarde : `public/ancien/index.html`, servi à `/ancien/`.
 
 ## Développement
