@@ -56,5 +56,5 @@ Réponds en français, en tutoyant l'utilisateur (agent SSIAP 1 d'ADP, porteur d
 
 - Demandé par l'utilisateur : savoir combien de personnes utilisent le simulateur, **sans aucune donnée des agents**.
 - Compteur maison : `src/ui/compteur.ts` envoie des noms d'événements à `/api/compteur` (fonction Netlify, stockage Netlify Blobs
-  « compteur », une clé par événement `e/jour/evenement/uuid`), seulement depuis simulateur-24h.netlify.app ; « Ne pas compter mes
-  visites » en bas de page. Page privée `/api/stats?cle=…` (clé dans la variable d'environnement Netlify `STATS_CLE`, connue de l'utilisateur).
+  « compteur », une clé par événement `e/jour/evenement/uuid`), seulement depuis simulateur-24h.netlify.app. Mention et lien « Ne pas compter mes visites »
+  retirés du bas de page à la demande de l'utilisateur (01/11/2026). Page privée `/api/stats?cle=…` (clé dans la variable d'environnement Netlify `STATS_CLE`, connue de l'utilisateur).
