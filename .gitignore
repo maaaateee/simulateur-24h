@@ -1,0 +1,5 @@
+node_modules
+dist
+*.local
+# Documents personnels de test (fiches de paie…) : jamais dans ce dépôt public.
+dev-fixtures/
