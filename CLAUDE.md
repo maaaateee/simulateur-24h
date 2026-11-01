@@ -24,7 +24,11 @@ Réponds en français, en tutoyant l'utilisateur (agent SSIAP 1 d'ADP, porteur d
 - Design : thème **sombre par défaut**, bouton clair/sombre (`src/ui/Theme.tsx`, `simulateur-24h:theme`) ; pas de tiret cadratin ni demi-cadratin
   dans les textes. Couleurs des séries validées (daltonisme) : 12 h orange `#e8650f`, 24 h vert d'eau `#119e8f`, en clair comme en sombre.
 - Trajet par défaut : 35 km, 50 min, 6 L/100, 2,30 €/L, 0,20 €/km (les anciennes valeurs enregistrées sont remplacées si non modifiées).
-- Pose des repos optimisée comme le font les agents (voir README) : fériés et dimanches gardés, un peu plus en 24 h (semaines à 48 h gardées,
-  profil mensuel 4-5 puis 5-6 vacations), congé d'été 24 h réduit à 3 vacations (au moins 12 jours de repos d'affilée).
+- Pose des repos comme le font les agents (voir README) : en 12 h, règles réelles de décompte des CP (principal ≥ 12 jours ouvrables,
+  repos intermédiaires décomptés, 6 blocs de 3, RF/RTT par 2) ; en 24 h, droits en heures, congé d'été de 3 vacations, dimanches,
+  fériés et semaines à 48 h gardés. Le 24 h travaille autant d'heures que le 12 h (`HEURES_EGALES`), pour que le gain ne vienne pas
+  d'un surplus de travail (décision expliquée à l'utilisateur le 01/11/2026).
+- Interface : explications dans des bulles « i » (`Info`) et des blocs dépliables (`Repli`) ; ligne « week-ends libres » retirée
+  à la demande de l'utilisateur ; version ordinateur à partir de 1 100 px (saisie à gauche, résultat à droite, calendrier sur 4 colonnes).
 - Fiche SSLIA en 24 h : mêmes lignes MAJ.75% et COMP. 25 % que les SSIAP, vacation comptée 24 h, plus un forfait d'heures complémentaires.
   Les taux sont propres à chaque agent : on lit ceux de la fiche (traitement ÷ 169 seulement à défaut).

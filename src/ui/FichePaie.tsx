@@ -3,6 +3,7 @@ import { echelonsDe, GRILLES, type Qualification } from '../domain/echelons'
 import { tauxDepuisTraitement, type Profil } from '../domain/paie'
 import { MOIS } from '../domain/dates'
 import { Choix, Interrupteur, Nombre } from './Champs'
+import { Info } from './Info'
 import { euros2, nombre } from './format'
 
 const nomMois = (p?: string) => (p ? `${MOIS[Number(p.slice(5, 7)) - 1]} ${p.slice(0, 4)}` : '')
@@ -55,7 +56,10 @@ export function FichePaie({ profil, onChange }: { profil: Profil; onChange: (p: 
         📄 Importer ma fiche de paie (PDF)
       </button>
       <input ref={input} type="file" accept="application/pdf,.pdf" multiple hidden onChange={(e) => lire(e.target.files)} />
-      <p className="note">🔒 Ta fiche est lue sur ton téléphone ou ton ordinateur : rien n'est envoyé ni enregistré en ligne.</p>
+      <p className="note centre">
+        🔒 Lue sur ton appareil, rien n'est envoyé
+        <Info>Le PDF est lu directement sur ton téléphone ou ton ordinateur. Seuls l'échelon, le traitement de base, l'ancienneté, les taux de majoration et les primes fixes sont gardés, dans ton navigateur. Jamais d'IBAN, de numéro de sécurité sociale, d'adresse ni de net.</Info>
+      </p>
       {etat && <p className={`etat ${etat.type}`}>{etat.message}</p>}
 
       <div className="profil">
@@ -73,11 +77,15 @@ export function FichePaie({ profil, onChange }: { profil: Profil; onChange: (p: 
             <dd>{nombre(profil.anciennete)} %</dd>
           </div>
           <div>
-            <dt>Heure de nuit / dimanche (+75 %)</dt>
+            <dt>
+              Heure à +75 % <Info>Nuit (22 h à 6 h) et dimanche. Ligne « MAJ.75% » de ta fiche.</Info>
+            </dt>
             <dd>{profil.t75.toLocaleString('fr-FR', { minimumFractionDigits: 3 })} €</dd>
           </div>
           <div>
-            <dt>Heure fériée (+100 %)</dt>
+            <dt>
+              Heure fériée <Info>+100 %, ligne « MAJ.100% JF » de ta fiche.</Info>
+            </dt>
             <dd>{euros2(profil.t100)}</dd>
           </div>
         </dl>
@@ -111,11 +119,11 @@ export function FichePaie({ profil, onChange }: { profil: Profil; onChange: (p: 
             </select>
           </label>
           <Nombre label="Traitement de base" value={profil.traitementBase} step={0.01} suffixe="€" onChange={changerTraitement} />
-          <Nombre label="Ancienneté" value={profil.anciennete} step={1} suffixe="%" onChange={(v) => changer({ anciennete: v })} aide="1 % par année, sur ta fiche (ANCIENNETE)" />
-          <Nombre label="Heure à +75 % (nuit, dimanche)" value={profil.t75} step={0.001} suffixe="€" onChange={(v) => changer({ t75: v })} aide="Ligne MAJ.75% de ta fiche" />
-          <Nombre label="Heure fériée (+100 %)" value={profil.t100} step={0.01} suffixe="€" onChange={(v) => changer({ t100: v })} aide="Ligne MAJ.100% JF de ta fiche" />
-          <Nombre label="Autres éléments fixes par mois" value={profil.autresFixes} step={0.01} suffixe="€" onChange={(v) => changer({ autresFixes: v })} aide="Supplément familial, IDT, indemnités kilométriques…" />
-          <Nombre label="Cotisations salariales" value={Math.round(profil.tauxCotisations * 1000) / 10} step={0.1} suffixe="%" onChange={(v) => changer({ tauxCotisations: v / 100 })} aide="≈ 21,4 % sur les fiches SSIAP" />
+          <Nombre label="Ancienneté" value={profil.anciennete} step={1} suffixe="%" onChange={(v) => changer({ anciennete: v })} aide="1 % par année d'ancienneté : ligne ANCIENNETE de ta fiche." />
+          <Nombre label="Heure à +75 % (nuit, dimanche)" value={profil.t75} step={0.001} suffixe="€" onChange={(v) => changer({ t75: v })} aide="Nuit et dimanche : ligne MAJ.75% de ta fiche." />
+          <Nombre label="Heure fériée (+100 %)" value={profil.t100} step={0.01} suffixe="€" onChange={(v) => changer({ t100: v })} aide="Ligne MAJ.100% JF de ta fiche." />
+          <Nombre label="Autres éléments fixes par mois" value={profil.autresFixes} step={0.01} suffixe="€" onChange={(v) => changer({ autresFixes: v })} aide="Supplément familial, IDT, indemnités kilométriques… Les mêmes en 12 h et en 24 h." />
+          <Nombre label="Cotisations salariales" value={Math.round(profil.tauxCotisations * 1000) / 10} step={0.1} suffixe="%" onChange={(v) => changer({ tauxCotisations: v / 100 })} aide="Environ 21,4 % du brut sur les fiches SSIAP." />
           <Nombre label="Taux d'impôt à la source" value={profil.tauxPas} step={0.1} suffixe="%" onChange={(v) => changer({ tauxPas: v })} />
           <div className="champ large">
             <Interrupteur checked={profil.treizieme} onChange={(v) => changer({ treizieme: v })}>

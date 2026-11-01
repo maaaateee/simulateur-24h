@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { PROFIL_24H, poserRepos, valeur } from './conges'
+import { decompte, poserRepos, profil24h, valeur } from './conges'
 import { cycle24h } from './cycle24'
 import { holidayName } from './holidays'
 import { HEURES_CONTRAT, estTravail, heuresTravaillees, vacations, type Planning } from './planning'
@@ -13,59 +13,82 @@ const parMois = (p: Planning) => {
     .map((k) => m[k])
 }
 
-describe('valeur d’une vacation', () => {
-  it('férié 1, dimanche en journée 0,75, nuit 0', () => {
+describe('outils', () => {
+  it('valeur d’une vacation : férié 1, dimanche en journée 0,75, nuit 0', () => {
     expect(valeur('2026-07-14', 'J', 7)).toBe(12)
     expect(valeur('2026-04-12', 'J', 7)).toBe(9)
     expect(valeur('2026-04-14', 'N', 7)).toBe(0)
-    // 24 h du samedi 11 avril, 7 h → 7 h : 1 h de dimanche en journée (6 h → 7 h).
     expect(valeur('2026-04-11', 'V24', 7)).toBe(0.75)
+  })
+
+  it('décompte en jours ouvrables : ni dimanche ni férié', () => {
+    // Du vendredi 17 au vendredi 24 juillet 2026 : 7 jours ouvrables (le dimanche 19 ne compte pas).
+    expect(decompte('2026-07-17', '2026-07-24')).toBe(7)
+    // Du lundi 13 au samedi 18 juillet : 5 (le 14 juillet est férié).
+    expect(decompte('2026-07-13', '2026-07-18')).toBe(5)
+  })
+
+  it('profil 24 h : moins de vacations au printemps et en été', () => {
+    const p = profil24h(2026, 62, Array(12).fill(8))
+    expect(p.reduce((a, b) => a + b, 0)).toBe(62)
+    expect(Math.max(...p.slice(0, 6))).toBeLessThanOrEqual(Math.min(...p.slice(6)) + 1)
+    expect(p.slice(0, 6).reduce((a, b) => a + b, 0)).toBeLessThan(p.slice(6).reduce((a, b) => a + b, 0))
   })
 })
 
-describe('pose des repos jusqu’à 1 501 h', () => {
-  it('12 h : CP, RF, RTT et repos de cycle, sous 1 501 h', () => {
-    const { planning, bilan } = poserRepos(tds12h(), '12h', 2026)
-    expect(bilan.cycle).toEqual({ vacations: 159, heures: 1902 })
-    expect(bilan.cp.vacations).toBe(15)
-    expect(bilan.rf).toMatchObject({ feries: 12, vacations: 12, heures: 144 })
-    expect(bilan.rtt).toMatchObject({ vacations: 6, reste: 5 })
-    expect(bilan.ete.jours).toBeGreaterThanOrEqual(12)
+describe('12 h : pose comme les agents', () => {
+  const { planning, bilan } = poserRepos(tds12h(), '12h', 2026)
+
+  it('congé principal d’été : au moins 12 jours ouvrables décomptés, d’un seul tenant', () => {
+    expect(bilan.ete.ouvrables).toBeGreaterThanOrEqual(12)
+    expect(bilan.ete.du >= '2026-07-01' && bilan.ete.au <= '2026-08-31').toBe(true)
+    // Toutes les vacations de la période sont posées.
+    for (const d of Object.keys(tds12h())) if (d >= bilan.ete.du && d <= bilan.ete.au) expect(planning[d]).toBe('CP')
+  })
+
+  it('30 jours de CP, 12 RF, 6 RTT, sous 1 501 h', () => {
+    expect(bilan.cp.jours).toBe(30)
+    expect(bilan.rf.vacations).toBe(12)
+    expect(bilan.rtt.vacations).toBe(6)
     expect(heuresTravaillees(planning)).toBeLessThanOrEqual(HEURES_CONTRAT)
-    expect(bilan.final.heures).toBe(heuresTravaillees(planning))
   })
 
-  it('24 h : 62 vacations par équipe, profil mensuel 4-5 puis 5-6, été de 3 vacations', () => {
-    for (let e = 0; e < 4; e++) {
-      const { planning, bilan } = poserRepos(cycle24h(2026, e), '24h', 2026)
-      expect(bilan.cp.vacations).toBe(9)
-      expect(bilan.ete.vacations).toBe(3)
-      expect(bilan.ete.jours).toBeGreaterThanOrEqual(12)
-      expect(bilan.rf.vacations).toBe(6)
-      expect(bilan.rtt.vacations).toBe(3)
-      expect(parMois(planning)).toEqual(PROFIL_24H)
-      expect(heuresTravaillees(planning)).toBe(1488)
-    }
-  })
-
-  it('on garde au travail les fériés et les dimanches', () => {
-    for (const [p, regime] of [
-      [tds12h(), '12h'],
-      [cycle24h(2026, 0), '24h'],
-    ] as const) {
-      const pose = poserRepos(p, regime, 2026).planning
-      const retirees = Object.keys(pose).filter((d) => !estTravail(pose[d]))
-      const feriesRetires = retirees.filter((d) => holidayName(d))
-      expect(feriesRetires.length).toBeLessThanOrEqual(regime === '24h' ? 0 : 1)
-      for (const d of retirees) if (pose[d] === 'RTT') expect(holidayName(d)).toBeUndefined()
-    }
-  })
-
-  it('une RF ne se prend qu’après le férié', () => {
-    const { planning } = poserRepos(cycle24h(2026, 2), '24h', 2026)
-    const rf = Object.keys(planning)
-      .filter((d) => planning[d] === 'RF')
+  it('repos posés en blocs de 2 ou 3 vacations de suite', () => {
+    const repos = Object.keys(planning)
+      .filter((d) => !estTravail(planning[d]) && (d < bilan.ete.du || d > bilan.ete.au))
       .sort()
+    const blocs: string[][] = []
+    for (const d of repos) {
+      const b = blocs[blocs.length - 1]
+      const veille = new Date(`${d}T12:00:00`)
+      veille.setDate(veille.getDate() - 1)
+      if (b && b[b.length - 1] === veille.toISOString().slice(0, 10)) b.push(d)
+      else blocs.push([d])
+    }
+    expect(blocs.every((b) => b.length >= 2)).toBe(true)
+  })
+})
+
+describe('24 h', () => {
+  it('même volume de repos que le 12 h si demandé, sinon 1 501 h au plus', () => {
+    for (let e = 0; e < 4; e++) {
+      const libre = poserRepos(cycle24h(2026, e), '24h', 2026)
+      expect(heuresTravaillees(libre.planning)).toBe(1488)
+      const egal = poserRepos(cycle24h(2026, e), '24h', 2026, { heuresCible: 1364 })
+      expect(heuresTravaillees(egal.planning)).toBe(1344)
+      expect(egal.bilan.ete.vacations).toBe(3)
+      expect(egal.bilan.rf.vacations).toBe(6)
+      expect(egal.bilan.rtt.vacations).toBe(3)
+      const m = parMois(egal.planning)
+      expect(m.slice(0, 6).reduce((a, b) => a + b, 0)).toBeLessThanOrEqual(m.slice(6).reduce((a, b) => a + b, 0))
+    }
+  })
+
+  it('on garde au travail les fériés, et les RF se prennent après leur férié', () => {
+    const { planning } = poserRepos(cycle24h(2026, 2), '24h', 2026)
+    const retirees = Object.keys(planning).filter((d) => !estTravail(planning[d]))
+    expect(retirees.filter((d) => holidayName(d))).toEqual([])
+    const rf = retirees.filter((d) => planning[d] === 'RF').sort()
     const feries = ['2026-04-06', '2026-05-01', '2026-05-08', '2026-05-14', '2026-05-25', '2026-07-14']
     rf.forEach((d, i) => expect(d >= feries[i]).toBe(true))
   })

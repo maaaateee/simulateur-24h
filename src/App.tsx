@@ -7,11 +7,12 @@ import { Calendrier } from './ui/Calendrier'
 import { Choix } from './ui/Champs'
 import { Detail } from './ui/Detail'
 import { FichePaie } from './ui/FichePaie'
+import { Info, Repli } from './ui/Info'
 import { Methode } from './ui/Methode'
 import { Partage } from './ui/Partage'
 import { Resultat } from './ui/Resultat'
-import { Trajets } from './ui/Trajets'
 import { BoutonTheme } from './ui/Theme'
+import { Trajets } from './ui/Trajets'
 import { useStored } from './ui/useStored'
 
 interface Etat {
@@ -33,15 +34,13 @@ const INITIAL: Etat = {
 /** Nouvelles valeurs de trajet par défaut, si l'agent n'avait pas changé celles de la première version. */
 const migrer = (e: Etat): Etat => (JSON.stringify(e.trajet) === JSON.stringify(TRAJET_V2) ? { ...e, trajet: TRAJET_PAR_DEFAUT } : e)
 
-function Etape({ n, titre, sous, children, id }: { n?: number; titre: string; sous?: string; children: React.ReactNode; id?: string }) {
+function Etape({ n, titre, info, children, id }: { n?: number; titre: string; info?: React.ReactNode; children: React.ReactNode; id?: string }) {
   return (
     <section className="etape" id={id}>
       <div className="etape-tete">
         {n && <span className="numero">{n}</span>}
-        <div>
-          <h2>{titre}</h2>
-          {sous && <p className="etape-sous">{sous}</p>}
-        </div>
+        <h2>{titre}</h2>
+        {info && <Info>{info}</Info>}
       </div>
       {children}
     </section>
@@ -87,44 +86,71 @@ export default function App() {
       </header>
 
       <section className="hero contenu" id="haut">
-        <span className="badge">Période 2026-2027 · 1 501 h</span>
-        <h1>
-          12 h ou 24 h ?<br />
-          <span className="degrade">Fais ta simulation.</span>
-        </h1>
-        <p>Ton salaire, tes trajets et tes repos sur une année complète, entre ton rythme actuel et le cycle 24/72 proposé.</p>
+        <div>
+          <span className="badge">Période 2026-2027 · 1 501 h</span>
+          <h1>
+            12 h ou 24 h ?<br />
+            <span className="degrade">Fais ta simulation.</span>
+          </h1>
+          <p>Ton salaire, tes trajets et tes repos sur une année complète, entre ton rythme actuel et le cycle 24/72 proposé.</p>
+        </div>
         <ul className="atouts">
-          <li>🔒 Ta fiche de paie reste sur ton téléphone</li>
-          <li>📅 Les deux plannings à 1 501 h au plus</li>
-          <li>⚖️ Les mêmes droits des deux côtés</li>
+          <li>🔒 Ta fiche de paie reste sur ton appareil</li>
+          <li>📅 Une année complète, repos posés</li>
+          <li>⚖️ Le même volume de repos des deux côtés</li>
         </ul>
       </section>
 
       <main className="contenu">
-        <Etape n={1} titre="Ta paie" sous="Importe ta dernière fiche de paie, ou ajuste tes chiffres à la main." id="paie">
-          <FichePaie profil={etat.profil} onChange={(profil) => set({ profil })} />
-        </Etape>
+        <div className="disposition">
+          <div className="colonne-saisie">
+            <Etape n={1} titre="Ta paie" id="paie" info="Importe ta dernière fiche de paie : l'échelon, le traitement et tes taux de majoration sont repris tout seuls. Tu peux aussi tout saisir à la main.">
+              <FichePaie profil={etat.profil} onChange={(profil) => set({ profil })} />
+            </Etape>
 
-        <Etape n={2} titre="Ton trajet domicile-travail" sous="Un aller-retour par vacation : deux fois moins en 24 h." id="trajet">
-          <Trajets trajet={etat.trajet} onChange={(trajet) => set({ trajet })} />
-        </Etape>
+            <Etape n={2} titre="Ton trajet" id="trajet" info="Domicile-travail. Un aller-retour par vacation : deux fois moins en 24 h.">
+              <Trajets trajet={etat.trajet} onChange={(trajet) => set({ trajet })} />
+            </Etape>
+          </div>
 
-        <Etape n={3} titre="Ton résultat" sous="Estimation sur la période du 1er avril 2026 au 31 mars 2027." id="resultat">
-          <Resultat sim={sim} reglages={etat.reglages} onReglages={(reglages) => set({ reglages })} />
-          <Partage sim={sim} />
-        </Etape>
+          <div className="colonne-resultat">
+            <Etape n={3} titre="Ton résultat" id="resultat" info={`Estimation sur la période du 1er avril ${AN} au 31 mars ${AN + 1}.`}>
+              <Resultat sim={sim} reglages={etat.reglages} onReglages={(reglages) => set({ reglages })} />
+              <Partage sim={sim} />
+            </Etape>
+          </div>
+        </div>
 
-        <Etape titre="📅 Les deux plannings, mois par mois" id="plannings">
-          <p className="note">
-            Période du 1er avril {AN} au 31 mars {AN + 1}. En 12 h : un vrai TDS annuel SSIAP 1 de CDG. En 24 h : le cycle 24/72 de l'équipe {EQUIPES[etat.reglages.equipe]}. Dans les
-            deux, les repos sont déjà posés comme le ferait un agent, pour rester sous 1 501 h. Tu peux modifier les jours pour coller à ton propre planning.
-          </p>
+        <Etape
+          titre="📅 Les plannings"
+          id="plannings"
+          info={
+            <>
+              En 12 h, un vrai TDS annuel SSIAP 1 de CDG ; en 24 h, le cycle 24/72 de l'équipe {EQUIPES[etat.reglages.equipe]}. Les repos sont déjà posés comme le ferait un agent. Tu
+              peux modifier les jours pour coller à ton propre planning.
+            </>
+          }
+        >
           <Choix
             label="Planning affiché"
             value={vue}
             options={[
-              { value: '12h', label: <><i className="s12" /> 12 h actuel</> },
-              { value: '24h', label: <><i className="s24" /> 24 h · équipe {EQUIPES[etat.reglages.equipe]}</> },
+              {
+                value: '12h',
+                label: (
+                  <>
+                    <i className="s12" /> 12 h actuel
+                  </>
+                ),
+              },
+              {
+                value: '24h',
+                label: (
+                  <>
+                    <i className="s24" /> 24 h · équipe {EQUIPES[etat.reglages.equipe]}
+                  </>
+                ),
+              },
             ]}
             onChange={setVue}
           />
@@ -143,28 +169,27 @@ export default function App() {
           />
         </Etape>
 
-        <Etape titre="⚖️ Comment on arrive à 1 501 h">
+        <Repli titre="⚖️ Comment les repos sont posés (1 501 h au plus)" id="methode">
           <Methode b12={sim.c12.bilan} b24={sim.c24.bilan} an={AN} />
-        </Etape>
+        </Repli>
 
-        <Etape titre="🧮 Le détail du calcul">
+        <Repli titre="🧮 Le détail du calcul et les règles appliquées" id="detail">
           <Detail sim={sim} profil={etat.profil} />
-        </Etape>
+        </Repli>
       </main>
 
       <footer className="pied">
-        <div className="contenu">
+        <div className="contenu pied-int">
           <p>
-            <strong>L'équipe SSIAP du Projet 24h.</strong> Simulation indicative, fondée sur les règles ADP appliquées aujourd'hui (règlement DG/2005/2199, accord ARTT, grilles
-            2025). Elle ne remplace pas ta fiche de paie.
+            <strong>L'équipe SSIAP du Projet 24h</strong> · simulation indicative, qui ne remplace pas ta fiche de paie · tes chiffres restent sur ton appareil.
           </p>
-          <p>Tes chiffres restent sur ton appareil. Aucune donnée n'est envoyée.</p>
           <p>
-            <a href="/ancien/">Ancienne version du simulateur</a>
+            <a href="/ancien/">Ancienne version</a>
+            {' · '}
+            <button type="button" className="lien" onClick={() => confirm('Effacer ta simulation et revenir aux valeurs de départ ?') && setEtat(INITIAL)}>
+              Tout effacer
+            </button>
           </p>
-          <button type="button" className="lien" onClick={() => confirm('Effacer ta simulation et revenir aux valeurs de départ ?') && setEtat(INITIAL)}>
-            Tout effacer
-          </button>
         </div>
       </footer>
     </>

@@ -1186,3 +1186,212 @@ table {
     scroll-behavior: auto !important;
   }
 }
+
+/* Bulles d'aide */
+.info {
+  display: inline-flex;
+  vertical-align: middle;
+  margin-left: 6px;
+}
+.info-bouton {
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1px solid var(--trait-fort);
+  background: var(--carte-2);
+  color: var(--texte-2);
+  font: italic 700 0.72rem/1 Georgia, 'Times New Roman', serif;
+  cursor: help;
+  padding: 0;
+  flex: none;
+  position: relative;
+}
+.info-bouton::after {
+  /* Zone de toucher plus large que la pastille. */
+  content: '';
+  position: absolute;
+  inset: -10px;
+}
+.info-bouton[aria-expanded='true'],
+.info-bouton:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.bulle {
+  position: fixed;
+  z-index: 50;
+  max-width: min(300px, calc(100vw - 16px));
+  background: var(--carte-pleine);
+  color: var(--texte);
+  border: 1px solid var(--trait-fort);
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 0.84rem;
+  font-weight: 500;
+  line-height: 1.45;
+  text-align: left;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+  pointer-events: auto;
+  letter-spacing: 0;
+}
+:root[data-theme='light'] .bulle {
+  box-shadow: 0 12px 32px rgba(16, 32, 64, 0.18);
+}
+
+.champ-tete {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-height: 22px;
+}
+.champ-tete .info {
+  margin-left: 4px;
+}
+.interrupteur-ligne {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.interrupteur-ligne .interrupteur {
+  align-items: center;
+}
+.note.centre {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+}
+.etape-tete {
+  align-items: center;
+}
+.etape-tete .info {
+  margin-left: 2px;
+}
+
+/* Blocs qui se déroulent */
+details.repli {
+  padding: 0;
+}
+details.repli > summary {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  cursor: pointer;
+  padding: 18px 16px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+details.repli > summary::-webkit-details-marker {
+  display: none;
+}
+.chevron {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid var(--texte-2);
+  border-bottom: 2px solid var(--texte-2);
+  transform: rotate(45deg);
+  transition: transform 0.2s;
+  margin-top: -4px;
+}
+details.repli[open] .chevron {
+  transform: rotate(-135deg);
+  margin-top: 4px;
+}
+.repli-contenu {
+  padding: 0 16px 20px;
+}
+@media (min-width: 700px) {
+  details.repli > summary {
+    padding: 20px 30px;
+  }
+  .repli-contenu {
+    padding: 0 30px 26px;
+  }
+}
+.methode h3 {
+  font-size: 1rem;
+  margin: 20px 0 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.etapes-methode {
+  list-style: none;
+  padding-left: 0;
+}
+.etapes-methode li {
+  position: relative;
+  padding-left: 18px;
+}
+.etapes-methode li::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 0.62em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--doux);
+}
+
+/* Pied de page */
+.pied-int {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 24px;
+}
+
+/* Version ordinateur : saisie à gauche, résultat à droite, calendrier sur 4 colonnes. */
+@media (min-width: 1100px) {
+  .contenu {
+    max-width: 1240px;
+    padding: 0 28px;
+  }
+  .hero {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 32px;
+    padding-top: 44px;
+  }
+  .hero .atouts {
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 0 0 6px;
+  }
+  .disposition {
+    display: grid;
+    grid-template-columns: 400px minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
+  }
+  .colonne-saisie .etape:first-child,
+  .colonne-resultat .etape {
+    margin-top: 16px;
+  }
+  .colonne-saisie .grille-champs,
+  .colonne-saisie .profil-liste {
+    grid-template-columns: 1fr 1fr;
+  }
+  .colonne-resultat .etape {
+    padding: 28px 32px;
+  }
+  .mois-grille {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+@media (min-width: 1400px) {
+  .contenu {
+    max-width: 1320px;
+  }
+  .disposition {
+    grid-template-columns: 430px minmax(0, 1fr);
+  }
+}

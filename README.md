@@ -44,20 +44,21 @@ Le site Netlify est relié à la branche `main` : chaque commit sur `main` est m
 - Indemnité de CP : 1/10e de la rémunération annuelle, majorations comprises.
 - En 24 h, mêmes règles qu'en 12 h, comme sur la fiche SSLIA ci-dessous. Le règlement renvoie à des accords spécifiques pour le SSLIA et le SMU (H24).
 
-## Pose des repos jusqu'à 1 501 h
+## Pose des repos sur l'année
 
-Comme le font les agents : les repos sont posés sur les vacations qui rapportent le moins, en gardant au travail les dimanches et les fériés.
-Droits à valeur égale en heures dans les deux plannings :
+Comme le font les agents : des blocs de vacations pour de longues périodes de repos, en gardant au travail les dimanches et les fériés.
 
-1. **CP** : 5 semaines = 35 jours × la part de jours travaillés (15 vacations de 12 h, 9 de 24 h). Congé principal d'été réduit au minimum
-   pour avoir au moins 12 jours de repos d'affilée : 2 semaines en 12 h, 3 vacations de suite en juillet en 24 h. Le reste vacation par vacation.
-2. **RF** : un par férié légal × 12 h (12 vacations de 12 h ou 6 de 24 h en 2026-2027), chacune après son férié.
-3. **RTT** : 77 h en vacations entières (6 de 12 h ou 3 de 24 h), jamais un férié ; 5 h restent à poser en heures.
-4. **Repos de cycle** : ce qu'il faut pour ne pas dépasser 1 501 h.
+**12 h, règles ADP actuelles (PDG/2020/0607)** : CP décomptés en jours ouvrables (lundi → samedi hors fériés), du premier jour d'absence
+à la dernière vacation non effectuée ; les repos entre deux vacations posées comptent, jamais les dimanches ni les fériés.
+- Congé principal d'été : la période d'au moins 12 jours ouvrables, en juillet-août, qui libère le plus de vacations.
+- Solde de 18 jours en 6 fractions au plus : 6 blocs de 3 vacations de suite.
+- RF (après leur férié) et RTT (jamais un férié) : blocs de 2 vacations (2 repos accolés au plus).
+- 2026-2027 : 114 vacations, 1 364 h.
 
-- 12 h : repos répartis régulièrement dans l'année, sur la vacation la moins rentable à ±10 jours (fériés et dimanches évités, nuits non).
-- 24 h : on évite aussi de casser une semaine à 48 h, et chaque mois suit un profil de vacations travaillées (`PROFIL_24H` :
-  5 5 4 4 5 5 / 5 6 5 6 6 6, d'avril à mars, soit 62 vacations et 1 488 h).
+**24 h, droits comptés en heures (règles à négocier)** : congé d'été de 3 vacations de suite (72 h, la valeur de 12 jours ouvrables en 12 h),
+RF 12 × 12 h = 6 vacations, RTT 77 h = 3 vacations, puis repos de cycle. Le 24 h travaille **autant d'heures que le 12 h** (même volume
+de repos, `HEURES_EGALES` dans `simulation.ts`), à une vacation près : 56 vacations, 1 344 h. Mois répartis par `profil24h`
+(un peu moins de vacations au printemps et en été) ; on garde dimanches, fériés et semaines à 48 h.
 
 ## Ce que montre une fiche de paie SSLIA en 24 h (août 2026)
 

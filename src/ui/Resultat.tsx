@@ -1,6 +1,7 @@
 import { EQUIPES } from '../domain/planning'
 import type { Reglages, Simulation } from '../domain/simulation'
 import { Choix, Interrupteur } from './Champs'
+import { Info } from './Info'
 import { euros, heures, nombre, signe } from './format'
 import { useAnime } from './useAnime'
 
@@ -62,7 +63,6 @@ export function Resultat({ sim, reglages, onReglages }: { sim: Simulation; regla
     { label: 'Heures travaillées (1 501 h au plus)', a: heures(s12.heures), b: heures(s24.heures) },
     { label: 'Temps passé sur la route', a: heures(c12.transport.heures), b: heures(c24.transport.heures) },
     { label: 'Coût des trajets', a: euros(c12.transport.total), b: euros(c24.transport.total) },
-    { label: 'Week-ends entièrement libres', a: String(s12.weekendsLibres), b: String(s24.weekendsLibres) },
     { label: 'Repos de 3 jours ou plus', a: String(s12.reposLongs), b: String(s24.reposLongs) },
     { label: 'Plus longue période de repos', a: `${s12.plusLongRepos} jours`, b: `${s24.plusLongRepos} jours` },
     { label: 'Dimanches travaillés', a: String(s12.dimanchesTravailles), b: String(s24.dimanchesTravailles) },
@@ -72,7 +72,10 @@ export function Resultat({ sim, reglages, onReglages }: { sim: Simulation; regla
   return (
     <div className="resultat">
       <div className={`hero-gain ${sim.gainTotal >= 0 ? '' : 'perte'}`}>
-        <span className="hero-label">Avec le 24 h, sur un an, net dans ta poche</span>
+        <span className="hero-label">
+          Avec le 24 h, sur un an, net dans ta poche
+          <Info>Salaire net en plus (majorations, après cotisations et impôt) et frais de trajet économisés, sur la période du 1er avril 2026 au 31 mars 2027.</Info>
+        </span>
         <strong className="hero-chiffre">{signe(gain)}</strong>
         <span className="hero-sous">
           soit <b>{signe(sim.gainTotal / 12)}</b> par mois, salaire et trajets compris
@@ -88,7 +91,7 @@ export function Resultat({ sim, reglages, onReglages }: { sim: Simulation; regla
         <div className="tuile">
           <span className="tuile-label">🚗 Trajets</span>
           <strong>{signe(sim.economieTrajets)}</strong>
-          <small>de carburant, d'usure et de péage en moins</small>
+          <small>de carburant et d'usure en moins</small>
         </div>
         <div className="tuile">
           <span className="tuile-label">🕒 Route</span>
@@ -98,7 +101,7 @@ export function Resultat({ sim, reglages, onReglages }: { sim: Simulation; regla
         <div className="tuile">
           <span className="tuile-label">🌱 CO₂</span>
           <strong>−{nombre(Math.round((c12.transport.co2 - c24.transport.co2) / 10) / 100)} t</strong>
-          <small>de CO₂ en moins par an</small>
+          <small>en moins par an</small>
         </div>
       </div>
 
@@ -129,24 +132,27 @@ export function Resultat({ sim, reglages, onReglages }: { sim: Simulation; regla
           { label: 'Heures sur la route', a: c12.transport.heures, b: c24.transport.heures, format: heures },
           { label: 'Coût des trajets', a: c12.transport.total, b: c24.transport.total, format: euros },
           { label: 'Repos de 3 jours ou plus', a: s12.reposLongs, b: s24.reposLongs, format: (n) => String(n) },
-          { label: 'Week-ends entièrement libres', a: s12.weekendsLibres, b: s24.weekendsLibres, format: (n) => String(n) },
         ]}
       />
 
       <div className="reglages">
         <div className="reglage">
-          <span className="champ-label">Ton équipe en 24 h</span>
+          <span className="champ-label">
+            Ton équipe en 24 h
+            <Info>
+              Les fériés et les dimanches ne tombent pas pareil selon l'équipe : de {signe(min)} à {signe(max)} par an.
+            </Info>
+          </span>
           <Choix label="Équipe" value={reglages.equipe} options={EQUIPES.map((e, i) => ({ value: i, label: e }))} onChange={(equipe) => set({ equipe })} />
-          <small>
-            Les fériés et les dimanches ne tombent pas pareil selon l'équipe : de {signe(min)} à {signe(max)} par an.
-          </small>
         </div>
         <div className="reglage">
-          <span className="champ-label">Début et fin de la vacation de 24 h</span>
+          <span className="champ-label">
+            Prise de service en 24 h
+            <Info>
+              De {reglages.debut24} h à {reglages.debut24} h le lendemain. 7 h comme au SSLIA ; un vote est prévu si la Direction laisse le choix.
+            </Info>
+          </span>
           <Choix label="Heure de début" value={reglages.debut24} options={[6, 7, 8, 12].map((h) => ({ value: h, label: `${h} h` }))} onChange={(debut24) => set({ debut24 })} />
-          <small>
-            De {reglages.debut24} h à {reglages.debut24} h le lendemain. 7 h comme au SSLIA ; un vote est prévu si la Direction laisse le choix.
-          </small>
         </div>
       </div>
 
@@ -184,14 +190,14 @@ export function Resultat({ sim, reglages, onReglages }: { sim: Simulation; regla
           onChange={(semainesChargees) => set({ semainesChargees })}
           aide="+25 % de la 40e à la 50e heure d'une semaine, dans les deux plannings. Payé au SSLIA en 24 h (ligne COMP. 25 % de leur fiche)."
         >
-          Compter les semaines chargées (semaines à 48 h)
+          Semaines à 48 h payées +25 %
         </Interrupteur>
         <Interrupteur
           checked={reglages.indemniteCp}
           onChange={(indemniteCp) => set({ indemniteCp })}
-          aide="L'indemnité de congés payés vaut 1/10e de ce que tu as gagné dans l'année, majorations comprises."
+          aide="L'indemnité de congés payés vaut 1/10e de ce que tu as gagné dans l'année, majorations comprises : plus de majorations, c'est aussi plus d'indemnité de CP."
         >
-          Compter l'effet sur l'indemnité de congés payés
+          Effet sur l'indemnité de congés payés
         </Interrupteur>
       </div>
     </div>

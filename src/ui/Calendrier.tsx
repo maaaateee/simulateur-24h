@@ -83,9 +83,9 @@ export function Calendrier(props: {
           </button>
         )}
       </div>
-      {edition && <p className="note">Touche un jour pour changer : {ORDRE[regime].map((c) => (c === 'R' ? 'repos' : COURT[c])).join(' → ')}.</p>}
+      {edition && <p className="note">Sélectionne un jour pour le changer : {ORDRE[regime].map((c) => (c === 'R' ? 'repos' : COURT[c])).join(' → ')}.</p>}
       <p className="info-jour" aria-live="polite">
-        {choisi ? infos(choisi) : 'Touche un jour pour voir son détail.'}
+        {choisi ? infos(choisi) : 'Sélectionne un jour pour voir son détail.'}
       </p>
 
       <div className="mois-grille">

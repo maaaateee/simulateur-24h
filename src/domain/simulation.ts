@@ -52,11 +52,20 @@ export interface Simulation {
 
 export const AN = AN_TDS_12H
 
+/**
+ * Même volume de repos des deux côtés : le 24 h travaille autant d'heures que le 12 h (à une vacation près).
+ * Mettre false pour caler le 24 h sur 1 501 h (il travaillerait alors plus d'heures que le 12 h).
+ */
+export const HEURES_EGALES = true
+
 // La pose des repos ne dépend que du planning et de l'heure de début : on la garde en mémoire.
 const cache = new Map<string, ReturnType<typeof poserRepos>>()
 function pose(regime: Regime, equipe: number, debut24: number) {
   const cle = `${regime}-${equipe}-${debut24}`
-  if (!cache.has(cle)) cache.set(cle, poserRepos(regime === '12h' ? tds12h() : cycle24h(AN, equipe), regime, AN, debut24))
+  if (!cache.has(cle)) {
+    const heuresCible = regime === '24h' && HEURES_EGALES ? pose('12h', 0, 7).bilan.final.heures : undefined
+    cache.set(cle, poserRepos(regime === '12h' ? tds12h() : cycle24h(AN, equipe), regime, AN, { debut24, heuresCible }))
+  }
   return cache.get(cle)!
 }
 
