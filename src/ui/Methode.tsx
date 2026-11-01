@@ -33,11 +33,6 @@ export function Methode({ b12, b24, an }: { b12: Bilan; b24: Bilan; an: number }
           </thead>
           <tbody>
             <tr>
-              <th scope="row">Planning théorique</th>
-              <td>{ligne(b12.cycle.vacations, b12.cycle.heures, '')}</td>
-              <td>{ligne(b24.cycle.vacations, b24.cycle.heures, '')}</td>
-            </tr>
-            <tr>
               <th scope="row">Congés payés</th>
               <td>{ligne(b12.cp.vacations, b12.cp.heures, '−', `${b12.cp.jours} jours ouvrables`)}</td>
               <td>{ligne(b24.cp.vacations, b24.cp.heures, '−', `${b24.cp.vacations} CP`)}</td>
