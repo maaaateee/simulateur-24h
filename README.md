@@ -8,6 +8,7 @@ salaire (majorations), trajets (coût, temps, CO₂) et repos (week-ends libres,
 - La fiche de paie ADP (PDF) est lue **sur l'appareil** (pdf.js, texte natif) : rien n'est envoyé. Seuls l'échelon, le traitement de base,
   l'ancienneté, les taux de majoration, les éléments fixes et les taux de cotisations / d'impôt sont gardés, dans le navigateur.
 - Aucune statistique de visite, aucun traceur.
+- L'ancien simulateur (version d'octobre 2025) reste en ligne en sauvegarde : `public/ancien/index.html`, servi à `/ancien/`.
 
 ## Développement
 

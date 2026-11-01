@@ -129,6 +129,9 @@ export default function App() {
             2025). Elle ne remplace pas ta fiche de paie.
           </p>
           <p>Tes chiffres restent sur ton appareil. Aucune donnée n'est envoyée.</p>
+          <p>
+            <a href="/ancien/">Ancienne version du simulateur</a>
+          </p>
           <button type="button" className="lien" onClick={() => confirm('Effacer ta simulation et revenir aux valeurs de départ ?') && setEtat(INITIAL)}>
             Tout effacer
           </button>
