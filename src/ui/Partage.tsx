@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { Simulation } from '../domain/simulation'
+import { compter } from './compteur'
 import { heures, signe } from './format'
 
 const ADRESSE = 'https://simulateur-24h.netlify.app'
@@ -19,6 +20,7 @@ export function Partage({ sim }: { sim: Simulation }) {
   const [copie, setCopie] = useState(false)
   const texte = textePartage(sim)
   const partager = async () => {
+    compter('partage')
     if (navigator.share) {
       try {
         await navigator.share({ title: 'Simulateur 24h SSIAP', text: texte })
@@ -36,7 +38,7 @@ export function Partage({ sim }: { sim: Simulation }) {
       <button type="button" className="bouton principal" onClick={partager}>
         📤 Partager mon résultat
       </button>
-      <a className="bouton whatsapp" href={`https://wa.me/?text=${encodeURIComponent(texte)}`} target="_blank" rel="noopener noreferrer">
+      <a className="bouton whatsapp" href={`https://wa.me/?text=${encodeURIComponent(texte)}`} target="_blank" rel="noopener noreferrer" onClick={() => compter('partage')}>
         WhatsApp
       </a>
       {copie && <span className="etat ok">Texte copié : colle-le où tu veux.</span>}

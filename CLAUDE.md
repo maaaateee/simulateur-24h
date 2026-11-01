@@ -51,3 +51,10 @@ Réponds en français, en tutoyant l'utilisateur (agent SSIAP 1 d'ADP, porteur d
 - Plannings : contingents de repos (CP, RTT, RF : droit, posé, reste ; RC nuit acquis), comme dans Planning SSIAP.
 - Les agents ne voyaient pas qu'on pouvait passer du planning 24 h au 12 h : grands onglets pleine largeur, l'autre onglet clignote
   (pointillés, halo) avec « Touche pour afficher » tant qu'il n'a jamais été ouvert (`simulateur-24h:bascule`).
+
+## Statistiques de visite (01/11/2026)
+
+- Demandé par l'utilisateur : savoir combien de personnes utilisent le simulateur, **sans aucune donnée des agents**.
+- Compteur maison : `src/ui/compteur.ts` envoie des noms d'événements à `/api/compteur` (fonction Netlify, stockage Netlify Blobs
+  « compteur », une clé par événement `e/jour/evenement/uuid`), seulement depuis simulateur-24h.netlify.app ; « Ne pas compter mes
+  visites » en bas de page. Page privée `/api/stats?cle=…` (clé dans la variable d'environnement Netlify `STATS_CLE`, connue de l'utilisateur).

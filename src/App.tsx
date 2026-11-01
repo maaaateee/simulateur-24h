@@ -16,6 +16,7 @@ import { Resultat } from './ui/Resultat'
 import { BoutonTheme } from './ui/Theme'
 import { Trajets } from './ui/Trajets'
 import { heures } from './ui/format'
+import { activerCompteur, compterUneFois, compteurActif } from './ui/compteur'
 import { useStored } from './ui/useStored'
 
 interface Etat {
@@ -61,8 +62,10 @@ export default function App() {
       return false
     }
   })
+  const [compte, setCompte] = useState(compteurActif)
   const basculer = (r: Regime) => {
     setVue(r)
+    if (r === '12h') compterUneFois('bascule')
     if (r !== vue && !decouvert) {
       setDecouvert(true)
       try {
@@ -205,6 +208,19 @@ export default function App() {
         <div className="contenu pied-int">
           <p>
             <strong>L'équipe SSIAP du Projet 24h</strong> · simulation indicative, qui ne remplace pas ta fiche de paie · tes chiffres restent sur ton appareil.
+          </p>
+          <p>
+            Mesure d'audience anonyme : on compte seulement les visites, jamais tes chiffres ni ta fiche.{' '}
+            <button
+              type="button"
+              className="lien"
+              onClick={() => {
+                activerCompteur(!compte)
+                setCompte(!compte)
+              }}
+            >
+              {compte ? 'Ne pas compter mes visites' : 'Compter à nouveau mes visites'}
+            </button>
           </p>
           <p>
             <a href="/ancien/">Ancienne version</a>
