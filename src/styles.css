@@ -1047,6 +1047,7 @@ table {
   color: var(--c-V24-t);
 }
 .c-CP,
+.c-CPR,
 .c-RF,
 .c-RTT,
 .c-RC {
@@ -1055,6 +1056,11 @@ table {
 }
 .c-CP {
   background: var(--c-CP);
+  color: var(--c-CP-t);
+}
+.c-CPR {
+  /* Jour de repos décompté en CP (12 h) : même couleur que les CP, hachuré. */
+  background: repeating-linear-gradient(135deg, var(--c-CP) 0 4px, transparent 4px 7px), var(--c-R);
   color: var(--c-CP-t);
 }
 .c-RF {
@@ -1394,4 +1400,60 @@ details.repli[open] .chevron {
   .disposition {
     grid-template-columns: 430px minmax(0, 1fr);
   }
+}
+
+/* Détail dans la bulle du brut */
+.bulle-titre {
+  display: block;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+.bulle-ligne {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 2px 0;
+  color: var(--texte-2);
+}
+.bulle-ligne b {
+  color: var(--texte);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.bulle-ligne.total {
+  border-top: 1px solid var(--trait-fort);
+  margin-top: 4px;
+  padding-top: 6px;
+  font-weight: 800;
+  color: var(--texte);
+}
+.bulle-note {
+  display: block;
+  margin-top: 6px;
+  color: var(--doux);
+  font-size: 0.78rem;
+}
+.duel-carte small {
+  display: inline-flex;
+  align-items: center;
+}
+.duel-lignes {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--trait);
+  font-size: 0.8rem;
+  color: var(--texte-2);
+}
+.duel-lignes b {
+  color: var(--texte);
+  font-weight: 700;
+}
+.sous-note {
+  display: block !important;
+  font-size: 0.72rem;
+  color: var(--doux);
+  font-weight: 500;
 }

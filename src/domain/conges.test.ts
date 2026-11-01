@@ -39,17 +39,21 @@ describe('outils', () => {
 describe('12 h : pose comme les agents', () => {
   const { planning, bilan } = poserRepos(tds12h(), '12h', 2026)
 
-  it('congé principal d’été : au moins 12 jours ouvrables décomptés, d’un seul tenant', () => {
+  it('congé principal d’été : au moins 12 jours ouvrables décomptés, d’un seul tenant, repos du milieu en CP', () => {
     expect(bilan.ete.ouvrables).toBeGreaterThanOrEqual(12)
     expect(bilan.ete.du >= '2026-07-01' && bilan.ete.au <= '2026-08-31').toBe(true)
-    // Toutes les vacations de la période sont posées.
-    for (const d of Object.keys(tds12h())) if (d >= bilan.ete.du && d <= bilan.ete.au) expect(planning[d]).toBe('CP')
+    // Toutes les vacations de la période sont posées, et les jours de repos du milieu sont décomptés (CPR).
+    const tds = tds12h()
+    for (let d = bilan.ete.du; d <= bilan.ete.au; d = new Date(Date.parse(`${d}T12:00:00Z`) + 864e5).toISOString().slice(0, 10))
+      expect(planning[d]).toBe(tds[d] ? 'CP' : 'CPR')
+    expect(bilan.ete.reposDecomptes).toBeGreaterThan(0)
   })
 
-  it('30 jours de CP, 12 RF, 6 RTT, sous 1 501 h', () => {
+  it('tous les CP (30 jours) et toutes les RF, une partie des RTT, sous 1 501 h', () => {
     expect(bilan.cp.jours).toBe(30)
     expect(bilan.rf.vacations).toBe(12)
-    expect(bilan.rtt.vacations).toBe(6)
+    expect(bilan.rtt.vacations).toBe(3)
+    expect(bilan.rtt.reste).toBe(41)
     expect(heuresTravaillees(planning)).toBeLessThanOrEqual(HEURES_CONTRAT)
   })
 
@@ -65,20 +69,24 @@ describe('12 h : pose comme les agents', () => {
       if (b && b[b.length - 1] === veille.toISOString().slice(0, 10)) b.push(d)
       else blocs.push([d])
     }
-    expect(blocs.every((b) => b.length >= 2)).toBe(true)
+    // Blocs de 2 ou 3 ; au plus une RF ou RTT isolée (nombre impair de repos).
+    expect(blocs.filter((b) => b.length < 2).length).toBeLessThanOrEqual(1)
   })
 })
 
 describe('24 h', () => {
-  it('même volume de repos que le 12 h si demandé, sinon 1 501 h au plus', () => {
+  it('même volume de repos que le 12 h si demandé, sinon 1 501 h au plus ; répartition du SSLIA', () => {
     for (let e = 0; e < 4; e++) {
       const libre = poserRepos(cycle24h(2026, e), '24h', 2026)
       expect(heuresTravaillees(libre.planning)).toBe(1488)
-      const egal = poserRepos(cycle24h(2026, e), '24h', 2026, { heuresCible: 1364 })
-      expect(heuresTravaillees(egal.planning)).toBe(1344)
+      const egal = poserRepos(cycle24h(2026, e), '24h', 2026, { heuresCible: 1400 })
+      expect(heuresTravaillees(egal.planning)).toBe(1392)
       expect(egal.bilan.ete.vacations).toBe(3)
-      expect(egal.bilan.rf.vacations).toBe(6)
-      expect(egal.bilan.rtt.vacations).toBe(3)
+      expect(egal.bilan.rf.vacations).toBe(3)
+      expect(egal.bilan.rc.vacations).toBe(0)
+      // CP et RTT dans la proportion du SSLIA (8,5 pour 11).
+      const { cp, rtt } = { cp: egal.bilan.cp.vacations, rtt: egal.bilan.rtt.vacations }
+      expect(Math.abs(cp / (cp + rtt) - 8.5 / 19.5)).toBeLessThan(0.05)
       const m = parMois(egal.planning)
       expect(m.slice(0, 6).reduce((a, b) => a + b, 0)).toBeLessThanOrEqual(m.slice(6).reduce((a, b) => a + b, 0))
     }

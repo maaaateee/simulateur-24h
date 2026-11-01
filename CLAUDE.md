@@ -32,3 +32,13 @@ Réponds en français, en tutoyant l'utilisateur (agent SSIAP 1 d'ADP, porteur d
   à la demande de l'utilisateur ; version ordinateur à partir de 1 100 px (saisie à gauche, résultat à droite, calendrier sur 4 colonnes).
 - Fiche SSLIA en 24 h : mêmes lignes MAJ.75% et COMP. 25 % que les SSIAP, vacation comptée 24 h, plus un forfait d'heures complémentaires.
   Les taux sont propres à chaque agent : on lit ceux de la fiche (traitement ÷ 169 seulement à défaut).
+
+## Retours de l'utilisateur (01/11/2026, nuit)
+
+- 12 h : tous les CP et toutes les RF posés, une partie des RTT gardée (`RTT_POSEES_12H` = 3) pour rester plus près de 1 501 h ;
+  jours de repos d'une période de CP affichés en CP hachuré (`CPR`, décomptés sauf dimanche et férié).
+- 24 h : un CP = une vacation (le congé d'été de 3 vacations = 3 CP) ; contingents d'un pompier SSLIA à 1 656 h : 8,5 CP, 11 RTT, 3 RF,
+  donc plus de CP et de RTT pour les SSIAP à 1 501 h, dans la même proportion. Plus de « repos de cycle ».
+- Le « brut par mois » est bien le brut (traitement, ancienneté, assiduité, 13e mois, supplément familial, IDT, majorations) : détail en bulle,
+  part des majorations et net estimé affichés sous chaque carte du face-à-face.
+- Paragraphe sur la fiche SSLIA retiré de l'application (c'était une vérification).

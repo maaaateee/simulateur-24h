@@ -2,7 +2,9 @@ import { EQUIPES } from '../domain/planning'
 import type { Reglages, Simulation } from '../domain/simulation'
 import { Choix, Interrupteur } from './Champs'
 import { Info } from './Info'
-import { euros, heures, nombre, signe } from './format'
+import { netDepuisBrut, type Profil } from '../domain/paie'
+import type { Cote } from '../domain/simulation'
+import { euros, euros2, heures, nombre, signe } from './format'
 import { useAnime } from './useAnime'
 
 interface Mesure {
@@ -47,7 +49,55 @@ function FaceAFace({ mesures }: { mesures: Mesure[] }) {
   )
 }
 
-export function Resultat({ sim, reglages, onReglages }: { sim: Simulation; reglages: Reglages; onReglages: (r: Reglages) => void }) {
+/** Carte du face-à-face : brut mensuel moyen, avec son détail en bulle, la part des majorations et le net estimé. */
+function CarteDuel({ c, sim, profil, titre, serie, gagnant }: { c: Cote; sim: Simulation; profil: Profil; titre: string; serie: 's12' | 's24'; gagnant?: boolean }) {
+  const maj = c.resultat.montants.total / 12
+  return (
+    <div className={`duel-carte ${serie === 's12' ? 'c12' : 'c24'} ${gagnant ? 'gagnant' : ''}`}>
+      <span className="duel-titre">
+        <i className={serie} /> {titre}
+      </span>
+      <strong>{euros(c.brutMensuel)}</strong>
+      <small>
+        brut par mois en moyenne
+        <Info>
+          <span className="bulle-titre">Brut mensuel moyen</span>
+          {sim.fixe.map((l) => (
+            <span className="bulle-ligne" key={l.libelle}>
+              <span>{l.libelle}</span>
+              <b>{euros2(l.montant)}</b>
+            </span>
+          ))}
+          <span className="bulle-ligne">
+            <span>Majorations (moyenne)</span>
+            <b>{euros2(c.resultat.montants.total / 12)}</b>
+          </span>
+          {c.cp > 0 && (
+            <span className="bulle-ligne">
+              <span>Indemnité de CP (part des majorations)</span>
+              <b>{euros2(c.cp / 12)}</b>
+            </span>
+          )}
+          <span className="bulle-ligne total">
+            <span>Total brut</span>
+            <b>{euros2(c.brutMensuel)}</b>
+          </span>
+          <span className="bulle-note">Hors primes ponctuelles (prime de juin, rappels…). Le traitement, l'ancienneté et les primes fixes sont les mêmes en 12 h et en 24 h.</span>
+        </Info>
+      </small>
+      <span className="duel-lignes">
+        <span>
+          dont majorations <b>{euros(maj)}</b>
+        </span>
+        <span>
+          net estimé <b>≈ {euros(netDepuisBrut(c.brutMensuel, profil))}</b>
+        </span>
+      </span>
+    </div>
+  )
+}
+
+export function Resultat({ sim, profil, reglages, onReglages }: { sim: Simulation; profil: Profil; reglages: Reglages; onReglages: (r: Reglages) => void }) {
   const { c12, c24 } = sim
   const s12 = c12.resultat.stats
   const s24 = c24.resultat.stats
@@ -106,23 +156,11 @@ export function Resultat({ sim, reglages, onReglages }: { sim: Simulation; regla
       </div>
 
       <div className="duel">
-        <div className="duel-carte c12">
-          <span className="duel-titre">
-            <i className="s12" /> 12 h actuel
-          </span>
-          <strong>{euros(c12.brutMensuel)}</strong>
-          <small>brut moyen par mois</small>
-        </div>
+        <CarteDuel c={c12} sim={sim} profil={profil} titre="12 h actuel" serie="s12" />
         <span className="duel-vs" aria-hidden="true">
           VS
         </span>
-        <div className={`duel-carte c24 ${c24.brutMensuel >= c12.brutMensuel ? 'gagnant' : ''}`}>
-          <span className="duel-titre">
-            <i className="s24" /> 24 h proposé
-          </span>
-          <strong>{euros(c24.brutMensuel)}</strong>
-          <small>brut moyen par mois</small>
-        </div>
+        <CarteDuel c={c24} sim={sim} profil={profil} titre="24 h proposé" serie="s24" gagnant={c24.brutMensuel >= c12.brutMensuel} />
       </div>
 
       <FaceAFace

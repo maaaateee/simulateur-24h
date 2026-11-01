@@ -9,7 +9,7 @@ const reglages = { equipe: 0, debut24: 7, semainesChargees: true, indemniteCp: t
 describe('simulation complète', () => {
   it('compare les deux plannings sur la même base', () => {
     const s = simuler(profil, TRAJET_PAR_DEFAUT, reglages, {}, {})
-    expect(s.c12.resultat.stats.vacations).toBe(114)
+    expect(s.c12.resultat.stats.vacations).toBe(117)
     // Même volume de repos : le 24 h travaille autant d'heures que le 12 h, à une vacation près.
     expect(s.c12.resultat.stats.heures - s.c24.resultat.stats.heures).toBeGreaterThanOrEqual(0)
     expect(s.c12.resultat.stats.heures - s.c24.resultat.stats.heures).toBeLessThan(24)

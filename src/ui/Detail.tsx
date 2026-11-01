@@ -99,11 +99,7 @@ export function Detail({ sim, profil }: { sim: Simulation; profil: Profil }) {
         <li>Semaines chargées : de la 40e à la 42e heure +25 % (ligne « COMP. 25 % »), de la 43e à la 50e +25 %, au-delà +50 % (§ 3.1 et 3.3 du même règlement).</li>
         <li>Les primes fixes (traitement de base, ancienneté, assiduité, 13e mois, supplément familial, IDT…) ne changent pas avec le rythme de travail.</li>
       </ul>
-      <p className="avertissement">
-        🚒 <strong>Ce que montre une fiche de paie de pompier SSLIA en 24 h</strong> (août 2026) : une vacation compte 24 h de travail ; les heures de nuit et de dimanche sont payées
-        +75 % (même ligne MAJ.75% que nous) ; les semaines chargées sont payées +25 % (ligne COMP. 25 %). Le simulateur applique ces mêmes règles au 24 h SSIAP. Les modalités
-        définitives restent à négocier avec la Direction : c'est une estimation, qui ne remplace pas ta fiche de paie.
-      </p>
+
     </div>
   )
 }

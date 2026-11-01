@@ -10,7 +10,8 @@ export type Regime = '12h' | '24h'
 export type CodeTravail = 'J' | 'N' | 'J10' | 'V24'
 /** CP : congés payés, RF : récupération de jour férié, RTT, RC : repos de cycle (pour ne pas dépasser 1 501 h). */
 export type CodeRepos = 'CP' | 'RF' | 'RTT' | 'RC'
-export type Code = CodeTravail | CodeRepos
+/** CPR : jour de repos compris dans une période de CP en 12 h, décompté comme un CP (sauf dimanche et férié). */
+export type Code = CodeTravail | CodeRepos | 'CPR'
 export type Planning = Record<ISODate, Code>
 
 /** Durée du contrat en horaire continu (avenant ARTT). */

@@ -115,7 +115,7 @@ export default function App() {
 
           <div className="colonne-resultat">
             <Etape n={3} titre="Ton résultat" id="resultat" info={`Estimation sur la période du 1er avril ${AN} au 31 mars ${AN + 1}.`}>
-              <Resultat sim={sim} reglages={etat.reglages} onReglages={(reglages) => set({ reglages })} />
+              <Resultat sim={sim} profil={etat.profil} reglages={etat.reglages} onReglages={(reglages) => set({ reglages })} />
               <Partage sim={sim} />
             </Etape>
           </div>

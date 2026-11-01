@@ -14,9 +14,10 @@ export const LIBELLES: Record<Code, string> = {
   RF: 'Récupération de jour férié',
   RTT: 'RTT',
   RC: 'Repos de cycle',
+  CPR: 'Jour de repos décompté en CP',
 }
 
-const COURT: Record<Code, string> = { J: 'J', N: 'N', J10: 'J', V24: '24', CP: 'CP', RF: 'RF', RTT: 'RT', RC: 'RC' }
+const COURT: Record<Code, string> = { J: 'J', N: 'N', J10: 'J', V24: '24', CP: 'CP', RF: 'RF', RTT: 'RT', RC: 'RC', CPR: 'CP' }
 
 const ORDRE: Record<Regime, (Code | 'R')[]> = {
   '12h': ['R', 'J', 'N', 'CP', 'RF', 'RTT', 'RC'],
@@ -45,7 +46,14 @@ export function Calendrier(props: {
   const [edition, setEdition] = useState(false)
   const [choisi, setChoisi] = useState<ISODate | null>(null)
   const { planning, regime } = props
-  const libelle = (c: Code) => (c === 'V24' ? `Vacation de 24 h (${props.debut24} h → ${props.debut24} h)` : LIBELLES[c])
+  const libelle = (c: Code, d: ISODate) =>
+    c === 'V24'
+      ? `Vacation de 24 h (${props.debut24} h → ${props.debut24} h)`
+      : c === 'CPR'
+        ? weekday(d) === 0 || holidayName(d)
+          ? 'Congé payé (non décompté : dimanche ou férié)'
+          : 'Congé payé sur un jour de repos (décompté)'
+        : LIBELLES[c]
   const pct = Math.min(100, (props.heuresTotal / HEURES_CONTRAT) * 100)
   const depasse = props.heuresTotal > HEURES_CONTRAT
 
@@ -58,7 +66,7 @@ export function Calendrier(props: {
     const c = planning[d]
     const f = holidayName(d)
     const date = `${JOURS[weekday(d)]} ${Number(d.slice(8))} ${MOIS[Number(d.slice(5, 7)) - 1]}`
-    return `${date} : ${c ? libelle(c) : 'repos'}${f ? ` · ${f}` : ''}${(props.auto[d] ?? 'R') !== (c ?? 'R') ? ' · modifié' : ''}`
+    return `${date} : ${c ? libelle(c, d) : 'repos'}${f ? ` · ${f}` : ''}${(props.auto[d] ?? 'R') !== (c ?? 'R') ? ' · modifié' : ''}`
   }
 
   return (
@@ -138,11 +146,13 @@ export function Calendrier(props: {
       </div>
 
       <div className="legende">
-        {(regime === '12h' ? (['J', 'N'] as Code[]) : (['V24'] as Code[])).concat(['CP', 'RF', 'RTT', 'RC']).map((c) => (
-          <span key={c}>
-            <i className={`c-${c}`} /> {c === 'V24' ? '24 h' : c === 'J' ? 'Jour' : c === 'N' ? 'Nuit' : LIBELLES[c]}
-          </span>
-        ))}
+        {(regime === '12h' ? (['J', 'N', 'CP', 'CPR', 'RF', 'RTT'] as Code[]) : (['V24', 'CP', 'RF', 'RTT'] as Code[]))
+          .concat(Object.values(planning).includes('RC') ? ['RC'] : [])
+          .map((c) => (
+            <span key={c}>
+              <i className={`c-${c}`} /> {c === 'V24' ? '24 h' : c === 'J' ? 'Jour' : c === 'N' ? 'Nuit' : c === 'CPR' ? 'Repos décompté en CP' : LIBELLES[c]}
+            </span>
+          ))}
         <span>
           <i className="c-R ferie-pastille" /> Jour férié
         </span>
