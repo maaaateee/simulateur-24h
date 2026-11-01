@@ -49,17 +49,17 @@ function FaceAFace({ mesures }: { mesures: Mesure[] }) {
   )
 }
 
-/** Carte du face-à-face : brut mensuel moyen, avec son détail en bulle, la part des majorations et le net estimé. */
+/** Carte du face-à-face : net mensuel estimé en gros, brut et détail en bulle. */
 function CarteDuel({ c, sim, profil, titre, serie, gagnant }: { c: Cote; sim: Simulation; profil: Profil; titre: string; serie: 's12' | 's24'; gagnant?: boolean }) {
-  const maj = c.resultat.montants.total / 12
+  const net = netDepuisBrut(c.brutMensuel, profil)
   return (
     <div className={`duel-carte ${serie === 's12' ? 'c12' : 'c24'} ${gagnant ? 'gagnant' : ''}`}>
       <span className="duel-titre">
         <i className={serie} /> {titre}
       </span>
-      <strong>{euros(c.brutMensuel)}</strong>
+      <strong>≈ {euros(net)}</strong>
       <small>
-        brut par mois en moyenne
+        net par mois en moyenne
         <Info>
           <span className="bulle-titre">Brut mensuel moyen</span>
           {sim.fixe.map((l) => (
@@ -82,15 +82,23 @@ function CarteDuel({ c, sim, profil, titre, serie, gagnant }: { c: Cote; sim: Si
             <span>Total brut</span>
             <b>{euros2(c.brutMensuel)}</b>
           </span>
+          <span className="bulle-ligne">
+            <span>Cotisations ({nombre(Math.round(profil.tauxCotisations * 1000) / 10)} %) et impôt ({nombre(profil.tauxPas)} %)</span>
+            <b>−{euros2(c.brutMensuel - net)}</b>
+          </span>
+          <span className="bulle-ligne total">
+            <span>Net estimé</span>
+            <b>{euros2(net)}</b>
+          </span>
           <span className="bulle-note">Hors primes ponctuelles (prime de juin, rappels…). Le traitement, l'ancienneté et les primes fixes sont les mêmes en 12 h et en 24 h.</span>
         </Info>
       </small>
       <span className="duel-lignes">
         <span>
-          dont majorations <b>{euros(maj)}</b>
+          brut <b>{euros(c.brutMensuel)}</b>
         </span>
         <span>
-          net estimé <b>≈ {euros(netDepuisBrut(c.brutMensuel, profil))}</b>
+          dont majorations <b>{euros(c.resultat.montants.total / 12)}</b>
         </span>
       </span>
     </div>

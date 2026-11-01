@@ -7,7 +7,8 @@
 //  - Congé principal d'été : une période continue d'au moins 12 jours ouvrables. Le solde (18 jours) se fractionne en
 //    6 fois au plus : des blocs de 3 vacations de suite.
 //  - RF (un par férié légal, après le férié) et RTT (jamais un férié) : blocs de 2 vacations (2 repos accolés au plus).
-//    Tous les CP et toutes les RF sont posés ; une partie des RTT est gardée (RTT_POSEES_12H), comme le font souvent les agents.
+//    Tous les CP sont posés ; RF et RTT juste ce qu'il faut pour approcher 1 501 h sans les dépasser (les autres sont gardées),
+//    comme beaucoup d'agents qui ne soldent pas tous leurs repos.
 // 24 h (règles à négocier) : un CP = une vacation de 24 h, répartition des repos inspirée du SSLIA (8,5 CP, 11 RTT, 3 RF
 // pour 1 656 h), avec plus de CP et de RTT puisque le contrat SSIAP est de 1 501 h.
 //  - Les deux agents ont le même volume de repos : le 24 h travaille autant d'heures que le 12 h (à 24 h près), jamais plus de 1 501 h.
@@ -39,8 +40,6 @@ export const CP_PRINCIPAL_MIN = 12
 export const RTT_HEURES = 77
 /** Valeur d'un RF en heures : une vacation de 12 h, comme aujourd'hui. */
 export const RF_HEURES = 12
-/** RTT posées en 12 h (vacations de 12 h) : les autres sont gardées. */
-export const RTT_POSEES_12H = 3
 /** Contingents d'un pompier SSLIA en 24 h (1 656 h par an) : 8,5 CP, 11 RTT, 3 RF (vacations de 24 h). */
 export const SSLIA = { cp: 8.5, rtt: 11, rf: 3 }
 /** Poids des mois (avril → mars) en 24 h : un peu moins de vacations au printemps et en été. */
@@ -186,8 +185,11 @@ export function poserRepos(theorique: Planning, regime: Regime, an: number, opts
 
     // 2. Blocs de l'année : le solde des CP en 6 blocs de 3 vacations, RF et RTT en blocs de 2.
     const resteCp = CP_JOURS - joursCp
-    const nRf = feries.length
-    const nRtt = Math.min(RTT_POSEES_12H, Math.floor(RTT_HEURES / 12))
+    // RF et RTT : juste assez pour approcher 1 501 h une fois tous les CP posés (environ une vacation par jour de CP restant).
+    const apresCp = heuresTravaillees(p) - resteCp * 12
+    const besoin = Math.max(0, Math.ceil((apresCp - HEURES_CONTRAT) / 12))
+    const nRf = Math.min(feries.length, Math.round((besoin * feries.length) / (feries.length + 6)))
+    const nRtt = Math.min(Math.floor(RTT_HEURES / 12), besoin - nRf)
     const fractions = Math.min(6, Math.ceil(resteCp / 3))
     const blocsRepos = Math.ceil((nRf + nRtt) / 2)
     const total = fractions + blocsRepos
@@ -301,10 +303,11 @@ export function poserRepos(theorique: Planning, regime: Regime, an: number, opts
     joursCp = lignes.CP.vacations
   }
 
-  // Repos de cycle si le plafond est encore dépassé (ne devrait pas arriver).
+  // Si le plafond est encore dépassé : une RTT (ou une RF) de plus en 12 h, un repos de cycle en 24 h.
   for (let i = 0; heuresTravaillees(p) > HEURES_CONTRAT && i < 60; i++) {
-    const v = vacations(p)
-    poser(v[Math.floor(((i * 0.618) % 1) * v.length)], 'RC')
+    const v = vacations(p).filter((d) => !holidayName(d))
+    const d = v.sort((a, b) => val.get(a)! - val.get(b)!)[Math.floor(((i * 0.618) % 1) * Math.min(v.length, 40))] ?? vacations(p)[0]
+    poser(d, regime === '12h' ? (lignes.RTT.heures + 12 <= RTT_HEURES ? 'RTT' : lignes.RF.vacations < feries.length && rfDisponible(d) ? 'RF' : 'RC') : 'RC')
   }
 
   // Période d'été : du premier au dernier jour posé (en 12 h, repos décomptés compris).

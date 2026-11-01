@@ -3,8 +3,10 @@ import { profilParDefaut, type Profil } from './domain/paie'
 import { EQUIPES, type Code, type Regime } from './domain/planning'
 import { AN, simuler, type Modifs, type Reglages } from './domain/simulation'
 import { TRAJET_PAR_DEFAUT, TRAJET_V2, type Trajet } from './domain/transport'
+import { contingents } from './domain/contingents'
+import { Bascule } from './ui/Bascule'
 import { Calendrier } from './ui/Calendrier'
-import { Choix } from './ui/Champs'
+import { Contingents } from './ui/Contingents'
 import { Detail } from './ui/Detail'
 import { FichePaie } from './ui/FichePaie'
 import { Info, Repli } from './ui/Info'
@@ -13,6 +15,7 @@ import { Partage } from './ui/Partage'
 import { Resultat } from './ui/Resultat'
 import { BoutonTheme } from './ui/Theme'
 import { Trajets } from './ui/Trajets'
+import { heures } from './ui/format'
 import { useStored } from './ui/useStored'
 
 interface Etat {
@@ -50,6 +53,25 @@ function Etape({ n, titre, info, children, id }: { n?: number; titre: string; in
 export default function App() {
   const [etat, setEtat] = useStored<Etat>('simulateur-24h:v2', INITIAL, migrer)
   const [vue, setVue] = useState<Regime>('24h')
+  // L'onglet de l'autre planning clignote tant que l'agent ne l'a jamais ouvert.
+  const [decouvert, setDecouvert] = useState(() => {
+    try {
+      return localStorage.getItem('simulateur-24h:bascule') === '1'
+    } catch {
+      return false
+    }
+  })
+  const basculer = (r: Regime) => {
+    setVue(r)
+    if (r !== vue && !decouvert) {
+      setDecouvert(true)
+      try {
+        localStorage.setItem('simulateur-24h:bascule', '1')
+      } catch {
+        // Navigation privée.
+      }
+    }
+  }
   const set = (part: Partial<Etat>) => setEtat((e) => ({ ...e, ...part }))
   const sim = useMemo(() => simuler(etat.profil, etat.trajet, etat.reglages, etat.modifs12, etat.modifs24), [etat])
 
@@ -131,29 +153,30 @@ export default function App() {
             </>
           }
         >
-          <Choix
-            label="Planning affiché"
-            value={vue}
-            options={[
-              {
-                value: '12h',
-                label: (
+          <Bascule
+            vue={vue}
+            onChange={basculer}
+            decouvert={decouvert}
+            onglets={{
+              '12h': {
+                titre: (
                   <>
                     <i className="s12" /> 12 h actuel
                   </>
                 ),
+                sous: `${sim.c12.resultat.stats.vacations} vacations · ${heures(sim.c12.resultat.stats.heures)}`,
               },
-              {
-                value: '24h',
-                label: (
+              '24h': {
+                titre: (
                   <>
-                    <i className="s24" /> 24 h · équipe {EQUIPES[etat.reglages.equipe]}
+                    <i className="s24" /> 24 h proposé
                   </>
                 ),
+                sous: `Équipe ${EQUIPES[etat.reglages.equipe]} · ${sim.c24.resultat.stats.vacations} vacations · ${heures(sim.c24.resultat.stats.heures)}`,
               },
-            ]}
-            onChange={setVue}
+            }}
           />
+          <Contingents liste={contingents(vue, cote.planning, cote.bilan)} rcNuit={cote.resultat.stats.rcNuit} />
           <Calendrier
             key={`${vue}-${etat.reglages.equipe}`}
             regime={vue}

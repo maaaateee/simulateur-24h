@@ -53,13 +53,16 @@ Comme le font les agents : des blocs de vacations pour de longues périodes de r
 - Congé principal d'été : la période d'au moins 12 jours ouvrables, en juillet-août, qui libère le plus de vacations.
 - Solde de 18 jours en 6 fractions au plus : 6 blocs de 3 vacations de suite.
 - RF (après leur férié) et RTT (jamais un férié) : blocs de 2 vacations (2 repos accolés au plus).
-- Tous les CP et toutes les RF ; 3 vacations de RTT sur 6 (`RTT_POSEES_12H`), 41 h gardées. 2026-2027 : 117 vacations, 1 400 h.
+- Tous les CP ; RF et RTT juste assez pour approcher 1 501 h sans les dépasser (le reste est gardé). 2026-2027 : 5 RF, 2 vacations
+  de RTT, 125 vacations, 1 496 h.
 
 **24 h (règles à négocier)** : un CP = une vacation de 24 h, les repos entre les vacations ne sont pas décomptés. Congé d'été de
 3 vacations de suite (3 CP, 14 jours de repos). Répartition inspirée du SSLIA (8,5 CP, 11 RTT, 3 RF pour 1 656 h, constante `SSLIA`) :
 3 RF, le reste en CP et RTT dans la proportion 8,5 / 11. Le 24 h travaille **autant d'heures que le 12 h** (`HEURES_EGALES` dans
-`simulation.ts`), à une vacation près : 58 vacations, 1 392 h (14 CP, 17 RTT, 3 RF). Mois répartis par `profil24h` ; on garde dimanches,
-fériés et semaines à 48 h.
+`simulation.ts`), à une vacation près et jamais plus de 1 501 h : 62 vacations, 1 488 h (12 CP, 15 RTT, 3 RF). Mois répartis par
+`profil24h` ; on garde dimanches, fériés et semaines à 48 h.
+
+**Contingents** (`src/domain/contingents.ts`) : droit, posé et reste de chaque repos, relus sur le planning affiché (suivent les modifications).
 
 ## Ce que montre une fiche de paie SSLIA en 24 h (août 2026)
 

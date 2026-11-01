@@ -42,3 +42,12 @@ Réponds en français, en tutoyant l'utilisateur (agent SSIAP 1 d'ADP, porteur d
 - Le « brut par mois » est bien le brut (traitement, ancienneté, assiduité, 13e mois, supplément familial, IDT, majorations) : détail en bulle,
   part des majorations et net estimé affichés sous chaque carte du face-à-face.
 - Paragraphe sur la fiche SSLIA retiré de l'application (c'était une vérification).
+
+## Retours de l'utilisateur (01/11/2026, fin de soirée)
+
+- Face-à-face : **net par mois en gros**, brut et majorations en petit, détail brut → net dans la bulle.
+- 12 h au plus près de 1 501 h : tous les CP, puis RF et RTT juste assez pour ne pas dépasser 1 501 h (1 496 h en 2026-2027) ;
+  24 h au même nombre d'heures, sous 1 501 h (1 488 h).
+- Plannings : contingents de repos (CP, RTT, RF : droit, posé, reste ; RC nuit acquis), comme dans Planning SSIAP.
+- Les agents ne voyaient pas qu'on pouvait passer du planning 24 h au 12 h : grands onglets pleine largeur, l'autre onglet clignote
+  (pointillés, halo) avec « Touche pour afficher » tant qu'il n'a jamais été ouvert (`simulateur-24h:bascule`).

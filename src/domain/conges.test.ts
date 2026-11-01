@@ -49,12 +49,12 @@ describe('12 h : pose comme les agents', () => {
     expect(bilan.ete.reposDecomptes).toBeGreaterThan(0)
   })
 
-  it('tous les CP (30 jours) et toutes les RF, une partie des RTT, sous 1 501 h', () => {
+  it('tous les CP (30 jours), RF et RTT juste assez pour approcher 1 501 h sans les dépasser', () => {
     expect(bilan.cp.jours).toBe(30)
-    expect(bilan.rf.vacations).toBe(12)
-    expect(bilan.rtt.vacations).toBe(3)
-    expect(bilan.rtt.reste).toBe(41)
     expect(heuresTravaillees(planning)).toBeLessThanOrEqual(HEURES_CONTRAT)
+    expect(heuresTravaillees(planning)).toBeGreaterThan(HEURES_CONTRAT - 12)
+    expect(bilan.rf.vacations).toBeLessThan(12)
+    expect(bilan.rtt.reste).toBeGreaterThan(0)
   })
 
   it('repos posés en blocs de 2 ou 3 vacations de suite', () => {
@@ -79,8 +79,8 @@ describe('24 h', () => {
     for (let e = 0; e < 4; e++) {
       const libre = poserRepos(cycle24h(2026, e), '24h', 2026)
       expect(heuresTravaillees(libre.planning)).toBe(1488)
-      const egal = poserRepos(cycle24h(2026, e), '24h', 2026, { heuresCible: 1400 })
-      expect(heuresTravaillees(egal.planning)).toBe(1392)
+      const egal = poserRepos(cycle24h(2026, e), '24h', 2026, { heuresCible: 1496 })
+      expect(heuresTravaillees(egal.planning)).toBe(1488)
       expect(egal.bilan.ete.vacations).toBe(3)
       expect(egal.bilan.rf.vacations).toBe(3)
       expect(egal.bilan.rc.vacations).toBe(0)
