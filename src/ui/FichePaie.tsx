@@ -3,6 +3,7 @@ import { echelonsDe, GRILLES, type Qualification } from '../domain/echelons'
 import { tauxDepuisTraitement, type Profil } from '../domain/paie'
 import { MOIS } from '../domain/dates'
 import { Choix, Interrupteur, Nombre } from './Champs'
+import { compter } from './compteur'
 import { Info } from './Info'
 import { euros2, nombre } from './format'
 
@@ -35,6 +36,7 @@ export function FichePaie({ profil, onChange }: { profil: Profil; onChange: (p: 
       const fiche = fiches[fiches.length - 1]
       const p = profilDepuisFiche(fiche, profil)
       onChange(p)
+      compter('fiche')
       setEtat({ type: 'ok', message: `Fiche ${deMois(fiche.periode)} lue.` })
     } catch (e) {
       setEtat({ type: 'erreur', message: e instanceof Error && /bulletin/.test(e.message) ? e.message : "Impossible de lire ce PDF. Utilise le PDF de ta fiche de paie ADP (pas une photo), ou saisis tes chiffres à la main." })
